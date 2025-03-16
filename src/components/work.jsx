@@ -492,15 +492,15 @@ function Work() {
                         </div>
                     </div>
                     
-                    {/* Image grid - fewer columns on mobile, more on larger screens */}
+                    {/* UPDATED: Image grid - improved mobile layout */}
                     <div 
                         ref={project.imagesRef} 
-                        className="grid grid-cols-2 sm:grid-cols-5 md:grid-cols-10 py-4 gap-2 aspect-video md:aspect-auto"
+                        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-10 py-4 gap-4 md:gap-2"
                     >
                         {project.images.map((img, index) => (
                             <div 
                                 key={index} 
-                                className="image-container overflow-hidden cursor-pointer transition-all h-48 md:h-full aspect-auto"
+                                className="image-container overflow-hidden cursor-pointer transition-all h-32 sm:h-40 md:h-full aspect-square sm:aspect-auto rounded-sm shadow-sm"
                                 style={{
                                     backgroundColor: "var(--bg-color)",
                                     opacity: 0.9
@@ -551,7 +551,7 @@ function Work() {
                         <div ref={modalContentRef} className="flex flex-col items-center justify-center w-full h-full relative" style={{ position: 'absolute', inset: 0, paddingBottom: '10vh' }}>
                         {/* Close button */}
                         <button 
-                            className="absolute top-24 right-1 p-2 rounded-full transition-all z-50 md:mr-4"
+                            className="absolute top-4 md:top-24 right-4 p-2 rounded-full transition-all z-50"
                             style={{
                                 color: 'var(--text-color)',
                                 backgroundColor: 'rgba(var(--bg-color-rgb, 240, 240, 240), 0.3)',
@@ -569,7 +569,7 @@ function Work() {
                             <div ref={modalNavButtonsRef} className="modal-nav-buttons">
                                 {/* Previous button */}
                                 <button 
-                                    className="absolute left-8 md:left-28 top-1/2 transform -translate-y-1/2 p-3 rounded-full transition-all z-50"
+                                    className="absolute left-4 md:left-28 top-1/2 transform -translate-y-1/2 p-3 rounded-full transition-all z-50"
                                     style={{
                                         color: 'var(--text-color)',
                                         backgroundColor: 'rgba(var(--bg-color-rgb, 240, 240, 240), 0.3)',
@@ -635,7 +635,7 @@ function Work() {
                         {currentProject && (
                             <div 
                                 ref={modalThumbnailsRef} 
-                                className="w-full md:w-20 md:h-full md:fixed md:left-0 top-24 md:top-0 overflow-y-auto md:overflow-x-hidden overflow-x-auto flex flex-row md:flex-col p-1 thumbnail-strip"
+                                className="w-full md:w-20 h-20 md:h-[100vh] md:fixed md:left-0 bottom-0 md:top-0 overflow-y-hidden md:overflow-y-auto overflow-x-auto flex flex-row md:flex-col p-1 thumbnail-strip"
                                 style={{ 
                                     position: 'fixed',
                                     zIndex: 9999,

@@ -7,7 +7,8 @@ import Work from './components/work'
 import Footer from './components/footer'
 import PageTransition from './components/PageTransition'
 import Loader from './components/Loader'
-import Cursor from './components/Cursor' // Import the Cursor component
+import Cursor from './components/Cursor'
+import './index.css'
 
 // AnimatedRoutes component to wrap each route with a transition
 const AnimatedRoutes = () => {
@@ -27,6 +28,16 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  // Font loading check
+  useEffect(() => {
+    // Check if fonts are loaded
+    document.fonts.ready.then(() => {
+      console.log("Fonts are loaded and ready");
+      setFontsLoaded(true);
+    });
+  }, []);
 
   useEffect(() => {
     // Set GSAP defaults
@@ -275,7 +286,7 @@ function App() {
       
       {/* Main content with conditional opacity */}
       <div 
-        className={`p-8 font-[Standerd] font-medium relative min-h-screen transition-opacity duration-500 ${isModalOpen ? 'modal-parent-open' : ''}`}
+        className={`p-8 font-standerd font-medium relative min-h-screen transition-opacity duration-500 ${isModalOpen ? 'modal-parent-open' : ''}`}
         style={{ opacity: isLoading ? 0 : 1 }}
       >
         <div className='fixed top-8 left-8 right-8 text-[1.55vh] z-[10]'>
