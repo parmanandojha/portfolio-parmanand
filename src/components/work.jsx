@@ -17,11 +17,11 @@ function Work() {
     const projects = [
         {
             id: 1,
-            name: "Ecommerce Website",
-            type: "Web Development",
+            name: "Bambooyst",
+            type: "Social Media",
             description: "Modern shopping experience",
             images: [
-                "https://images.pexels.com/photos/5632402/pexels-photo-5632402.jpeg?auto=compress&cs=tinysrgb&w=600",
+                "/images/bam1.webp",
                 "https://images.pexels.com/photos/5632398/pexels-photo-5632398.jpeg?auto=compress&cs=tinysrgb&w=600",
                 "https://images.pexels.com/photos/5632379/pexels-photo-5632379.jpeg?auto=compress&cs=tinysrgb&w=600",
                 "https://images.pexels.com/photos/6169/woman-hand-smartphone-desk.jpg?auto=compress&cs=tinysrgb&w=600",
@@ -61,20 +61,17 @@ function Work() {
         },
         {
             id: 3,
-            name: "Finance Dashboard",
-            type: "Web Application",
+            name: "Brands on Road",
+            type: "UI/UX",
             description: "Data visualization tool",
             images: [
-                "https://images.pexels.com/photos/7567444/pexels-photo-7567444.jpeg?auto=compress&cs=tinysrgb&w=600",
-                "https://images.pexels.com/photos/7567440/pexels-photo-7567440.jpeg?auto=compress&cs=tinysrgb&w=600",
-                "https://images.pexels.com/photos/730547/pexels-photo-730547.jpeg?auto=compress&cs=tinysrgb&w=600",
-                "https://images.pexels.com/photos/186461/pexels-photo-186461.jpeg?auto=compress&cs=tinysrgb&w=600",
-                "https://images.pexels.com/photos/187041/pexels-photo-187041.jpeg?auto=compress&cs=tinysrgb&w=600",
-                "https://images.pexels.com/photos/210607/pexels-photo-210607.jpeg?auto=compress&cs=tinysrgb&w=600",
-                "https://images.pexels.com/photos/159888/pexels-photo-159888.jpeg?auto=compress&cs=tinysrgb&w=600",
-                "https://images.pexels.com/photos/936137/pexels-photo-936137.jpeg?auto=compress&cs=tinysrgb&w=600",
-                "https://images.pexels.com/photos/4386158/pexels-photo-4386158.jpeg?auto=compress&cs=tinysrgb&w=600",
-                "https://images.pexels.com/photos/7821879/pexels-photo-7821879.jpeg?auto=compress&cs=tinysrgb&w=600"
+                "project images/Brands-1.webp", 
+                "project images/Brands-2.webp",
+                "project images/Brands-3.webp",
+                "project images/Brands-4.webp",
+                "project images/Brands-5.webp",
+                "project images/Brands-6.webp", 
+                "project images/Brands-7.webp",
             ],
             nameRef: React.createRef(),
             typeRef: React.createRef(),
@@ -83,20 +80,18 @@ function Work() {
         },
         {
             id: 4,
-            name: "Portfolio 2023",
-            type: "Personal Project",
+            name: "Bambyoost",
+            type: "Social Media",
             description: "Showcasing creative work",
             images: [
-                "https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=600",
-                "https://images.pexels.com/photos/326503/pexels-photo-326503.jpeg?auto=compress&cs=tinysrgb&w=600",
-                "https://images.pexels.com/photos/5939401/pexels-photo-5939401.jpeg?auto=compress&cs=tinysrgb&w=600",
-                "https://images.pexels.com/photos/3568520/pexels-photo-3568520.jpeg?auto=compress&cs=tinysrgb&w=600",
-                "https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=600",
-                "https://images.pexels.com/photos/1779487/pexels-photo-1779487.jpeg?auto=compress&cs=tinysrgb&w=600",
-                "https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg?auto=compress&cs=tinysrgb&w=600",
-                "https://images.pexels.com/photos/1181677/pexels-photo-1181677.jpeg?auto=compress&cs=tinysrgb&w=600",
-                "https://images.pexels.com/photos/3861972/pexels-photo-3861972.jpeg?auto=compress&cs=tinysrgb&w=600",
-                "https://images.pexels.com/photos/2102416/pexels-photo-2102416.jpeg?auto=compress&cs=tinysrgb&w=600"
+                "project images/bam1.webp", 
+                "project images/bam2.webp",
+                "project images/bam3.webp",
+                "project images/bam4.webp",
+                "project images/bam5.webp",
+                "project images/bam7.webp", 
+                "project images/bam9.webp",
+                "project images/bam10.webp",
             ],
             nameRef: React.createRef(),
             typeRef: React.createRef(),
@@ -676,7 +671,7 @@ function Work() {
                         {/* Image counter - only visible on mobile */}
                         {currentProject && (
                             <div 
-                                className="md:hidden absolute bottom-28 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-full image-counter"
+                                className="md:hidden absolute bottom-36 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-full image-counter"
                                 style={{ 
                                     bottom: "16vh",
                                     color: 'var(--text-color)',
