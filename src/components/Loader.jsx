@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 
 const Loader = ({ isLoading, setIsLoading }) => {
@@ -6,7 +6,50 @@ const Loader = ({ isLoading, setIsLoading }) => {
   const loaderContentRef = useRef(null);
   const counterRef = useRef(null);
   const progressBarRef = useRef(null);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
+  const [animationComplete, setAnimationComplete] = useState(false);
   
+  // Track image loading
+  useEffect(() => {
+    if (!isLoading) return;
+    
+    const images = document.querySelectorAll('img');
+    let loadedImagesCount = 0;
+    const totalImages = images.length;
+    
+    // If there are no images, mark as loaded
+    if (totalImages === 0) {
+      setImagesLoaded(true);
+      return;
+    }
+    
+    const imageLoaded = () => {
+      loadedImagesCount++;
+      if (loadedImagesCount === totalImages) {
+        setImagesLoaded(true);
+      }
+    };
+    
+    // Add load event listeners to all images
+    images.forEach(img => {
+      if (img.complete) {
+        imageLoaded();
+      } else {
+        img.addEventListener('load', imageLoaded);
+        img.addEventListener('error', imageLoaded); // Count failed images as loaded
+      }
+    });
+    
+    // Cleanup function
+    return () => {
+      images.forEach(img => {
+        img.removeEventListener('load', imageLoaded);
+        img.removeEventListener('error', imageLoaded);
+      });
+    };
+  }, [isLoading]);
+  
+  // Handle loader animation
   useEffect(() => {
     if (!isLoading) return;
     
@@ -18,13 +61,7 @@ const Loader = ({ isLoading, setIsLoading }) => {
     const tl = gsap.timeline({
       defaults: { ease: "power2.inOut" },
       onComplete: () => {
-        // Hide loader after animation completes
-        gsap.to(loaderRef.current, {
-          yPercent: -100,
-          duration: 0.8,
-          ease: "power3.inOut",
-          onComplete: () => setIsLoading(false)
-        });
+        setAnimationComplete(true);
       }
     });
     
@@ -59,7 +96,20 @@ const Loader = ({ isLoading, setIsLoading }) => {
     
     // Start progress updates
     updateProgress();
-  }, [isLoading, setIsLoading]);
+  }, [isLoading]);
+  
+  // Handle hiding the loader when both animation is complete AND images are loaded
+  useEffect(() => {
+    if (animationComplete && imagesLoaded && loaderRef.current) {
+      // Hide loader only when both conditions are met
+      gsap.to(loaderRef.current, {
+        yPercent: -100,
+        duration: 0.8,
+        ease: "power3.inOut",
+        onComplete: () => setIsLoading(false)
+      });
+    }
+  }, [animationComplete, imagesLoaded, setIsLoading]);
   
   // Don't render if not loading
   if (!isLoading) return null;
