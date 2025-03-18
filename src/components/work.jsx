@@ -692,9 +692,9 @@ function Work() {
                         {/* Image counter - only visible on mobile */}
                         {currentProject && (
                             <div 
-                                className="md:hidden absolute bottom-54 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-full image-counter"
+                                className="md:hidden absolute top-54 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-full image-counter"
                                 style={{ 
-                                    bottom: "24vh",
+                                    top: "24vh",
                                     color: 'var(--text-color)',
                                     backgroundColor: 'rgba(var(--bg-color-rgb, 240, 240, 240), 0.7)',
                                     backdropFilter: 'blur(5px)'
