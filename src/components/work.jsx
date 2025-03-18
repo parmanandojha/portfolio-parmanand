@@ -546,7 +546,7 @@ function Work() {
                         <div ref={modalContentRef} className="flex flex-col items-center justify-center w-full h-full relative" style={{ position: 'absolute', inset: 0, paddingBottom: '10vh' }}>
                         {/* Close button */}
                         <button 
-                            className="absolute top-4 md:top-24 right-4 p-2 rounded-full transition-all z-50"
+                            className="absolute top-14 md:top-24 right-4 p-2 rounded-full transition-all z-50"
                             style={{
                                 color: 'var(--text-color)',
                                 backgroundColor: 'rgba(var(--bg-color-rgb, 240, 240, 240), 0.3)',
@@ -671,9 +671,9 @@ function Work() {
                         {/* Image counter - only visible on mobile */}
                         {currentProject && (
                             <div 
-                                className="md:hidden absolute bottom-36 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-full image-counter"
+                                className="md:hidden absolute bottom-54 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-full image-counter"
                                 style={{ 
-                                    bottom: "16vh",
+                                    bottom: "24vh",
                                     color: 'var(--text-color)',
                                     backgroundColor: 'rgba(var(--bg-color-rgb, 240, 240, 240), 0.7)',
                                     backdropFilter: 'blur(5px)'

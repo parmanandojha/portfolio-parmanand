@@ -91,15 +91,15 @@ function Footer() {
             }}
         >
             <div>
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="no-underline text-black">
+                <a href="https://www.behance.net/ojhap" target="_blank" rel="noopener noreferrer" className="no-underline text-black">
                     <span ref={addToRefs} className="cursor-pointer relative inline-block">
-                        Instagram
+                        Behance
                         <span className="link-underline absolute left-0 bottom-0 h-[1px] w-0 bg-black"></span>
                     </span>
                 </a>
             </div>
             <div>
-                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="no-underline text-black">
+                <a href="https://www.linkedin.com/in/parmanand-ojha-81900a167/" target="_blank" rel="noopener noreferrer" className="no-underline text-black">
                     <span ref={addToRefs} className="cursor-pointer relative inline-block">
                         LinkedIn
                         <span className="link-underline absolute left-0 bottom-0 h-[1px] w-0 bg-black"></span>
