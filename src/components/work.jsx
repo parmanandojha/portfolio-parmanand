@@ -19,7 +19,7 @@ function Work() {
             id: 1,
             name: "Exponify",
             type: "Website Design",
-            description: "Modern shopping experience",
+            description: "",
             images: [
                 "project images/Exponify1.webp", 
                 "project images/Exponify2.webp", 
@@ -41,7 +41,7 @@ function Work() {
             id: 2,
             name: "Ila",
             type: "Branding",
-            description: "Plant care application",
+            description: "",
             images: [
                 "project images/ila1.webp", 
                 "project images/ila2.webp", 
@@ -63,7 +63,7 @@ function Work() {
             id: 3,
             name: "SmartTek",
             type: "Branding, UI/UX",
-            description: "Data visualization tool",
+            description: "",
             images: [
                 "project images/smarttek1.webp", 
                 "project images/smarttek2.webp",
@@ -84,7 +84,7 @@ function Work() {
             id: 4,
             name: "Haven",
             type: "UI/UX",
-            description: "Showcasing creative work",
+            description: "",
             images: [
                 "project images/Haven1.webp", 
                 "project images/Haven2.webp",
@@ -102,7 +102,7 @@ function Work() {
             id: 5,
             name: "Maven",
             type: "Branding",
-            description: "Showcasing creative work",
+            description: "",
             images: [
                 "project images/maven1.webp", 
                 "project images/maven2.webp",
