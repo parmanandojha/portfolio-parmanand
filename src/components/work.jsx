@@ -17,11 +17,11 @@ function Work() {
     const projects = [
         {
             id: 1,
-            name: "Bambooyst",
-            type: "Social Media",
+            name: "Exponify",
+            type: "Website Design",
             description: "Modern shopping experience",
             images: [
-                "/images/bam1.webp",
+                "project images/Brands-1.webp", 
                 "https://images.pexels.com/photos/5632398/pexels-photo-5632398.jpeg?auto=compress&cs=tinysrgb&w=600",
                 "https://images.pexels.com/photos/5632379/pexels-photo-5632379.jpeg?auto=compress&cs=tinysrgb&w=600",
                 "https://images.pexels.com/photos/6169/woman-hand-smartphone-desk.jpg?auto=compress&cs=tinysrgb&w=600",
@@ -39,8 +39,8 @@ function Work() {
         },
         {
             id: 2,
-            name: "Bloom App",
-            type: "UI/UX Design",
+            name: "Ila",
+            type: "Branding",
             description: "Plant care application",
             images: [
                 "https://images.pexels.com/photos/4195342/pexels-photo-4195342.jpeg?auto=compress&cs=tinysrgb&w=600",
@@ -452,7 +452,7 @@ function Work() {
     
     return (
         <div ref={containerRef} className="relative h-full content-center py-12 md:py-24">
-            <h1 ref={headerRef} className="text-[8vh] font-semibold uppercase inline-block">Projects</h1>
+            <h1 ref={headerRef} className="text-[6vh] md:text-[10vh] font-semibold uppercase inline-block">Projects</h1>
             
             {projects.map((project, index) => (
                 <div 
@@ -490,7 +490,7 @@ function Work() {
                     {/* UPDATED: Image grid - improved mobile layout */}
                     <div 
                         ref={project.imagesRef} 
-                        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-10 py-4 gap-4 md:gap-2"
+                        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-10 py-4 gap-2"
                     >
                         {project.images.map((img, index) => (
                             <div 
@@ -538,7 +538,8 @@ function Work() {
                         transform: 'none',
                         willChange: 'opacity',
                         transformOrigin: 'center center',
-                        backgroundColor: 'var(--bg-color)'
+                        backgroundColor: 'var(--bg-color)',
+                        backdropFilter: 'blur(5px)'
                     }}
                 >
                     <div className="relative w-full h-full flex flex-col md:flex-row items-center justify-center" onClick={(e) => e.stopPropagation()}>
@@ -614,7 +615,7 @@ function Work() {
                         <img 
                             src={selectedImage.replace('w=600', 'w=1200')} // Load higher quality for fullscreen
                             alt="Fullscreen view"
-                            className="max-h-3/5 max-w-full object-contain p-4"
+                            className="max-h-3/5 max-w-full object-contain p-4 m-auto"
                             style={{
                                 height: "auto",
                                 maxHeight: "70vh",
@@ -630,11 +631,11 @@ function Work() {
                         {currentProject && (
                             <div 
                                 ref={modalThumbnailsRef} 
-                                className="w-full md:w-20 h-20 md:h-[100vh] md:fixed md:left-0 bottom-0 md:top-0 overflow-y-hidden md:overflow-y-auto overflow-x-auto flex flex-row md:flex-col p-1 thumbnail-strip"
+                                className="hidden md:block w-full md:w-20 h-20 md:h-[90vh] md:fixed md:left-0 bottom-0 md:top-0 overflow-y-hidden md:overflow-y-auto overflow-x-auto flex flex-row md:flex-col p-1 thumbnail-strip"
                                 style={{ 
                                     position: 'fixed',
                                     zIndex: 9999,
-                                    backgroundColor: 'var(--bg-color)',
+                                    /*backgroundColor: 'var(--bg-color)',*/
                                     opacity: 0.95
                                 }}>
                                 <div className="flex md:flex-col flex-row gap-1 w-full md:pt-16">

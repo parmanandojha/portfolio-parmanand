@@ -74,7 +74,7 @@ const Loader = ({ isLoading, setIsLoading }) => {
       }}
     >
       <div ref={loaderContentRef} className="flex flex-col items-center">
-        <div className="text-[8vh] font-semibold mb-4">LOADING</div>
+        <div className="text-[6vh] md:text-[10vh] font-semibold mb-4">LOADING</div>
         <div className="relative w-60 h-[2px] bg-gray-300 dark:bg-gray-700 overflow-hidden">
           <div 
             ref={progressBarRef} 
