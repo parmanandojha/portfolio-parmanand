@@ -8,6 +8,7 @@ function Info() {
     const yearRef = useRef(null);
     const titleRef1 = useRef(null);
     const titleRef2 = useRef(null);
+    const titleRef3 = useRef(null);
     const contactRef = useRef(null);
     const taglineRef = useRef(null);
     
@@ -23,7 +24,7 @@ function Info() {
             });
             
             // Setup initial states
-            gsap.set([nameRef.current, yearRef.current, titleRef1.current, titleRef2.current], { 
+            gsap.set([nameRef.current, yearRef.current, titleRef1.current, titleRef2.current, titleRef3.current], { 
                 y: 100, 
                 opacity: 0
             });
@@ -36,6 +37,7 @@ function Info() {
               .to([yearRef.current, contactRef.current], { y: 0, opacity: 1, stagger: 0.1 }, "-=0.7")
               .to(titleRef1.current, { y: 0, opacity: 1 }, "-=0.5")
               .to(titleRef2.current, { y: 0, opacity: 1 }, "-=0.7")
+              .to(titleRef3.current, { y: 0, opacity: 1 }, "-=0.9")
               .to(taglineRef.current, { opacity: 1, duration: 0.8 }, "-=0.3");
               
         }, containerRef); // Scope to container
@@ -62,6 +64,7 @@ function Info() {
                     <div><span ref={titleRef2} className="text-[4vh] md:text-[10vh] font-semibold uppercase inline-block py-2 md:py-0">Designer</span></div>
                     <div ref={taglineRef} className="my-2 mx-0 md:mx-1 text-[1.55vh]"><span>Crafting Narrative<br></br>Through Design.</span></div>
                 </div>
+               
             </div>
         </div>
         </>
