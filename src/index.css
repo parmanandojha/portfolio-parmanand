@@ -3,7 +3,7 @@
 /* Custom Font Declaration */
 @font-face {
   font-family: 'Standerd';
-  src: url('./assets/Webfont/Standerd-Medium.woff') format('woff');
+  src: url('./assets/Webfont/Standerd-Medium.otf') format('otf');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -235,9 +235,9 @@ button[aria-label="Next image"] {
   right: 0 !important;
   bottom: 0 !important;
   width: 100% !important;
-  height: 100% !important;
+  height: 90% !important;
   max-width: 100vw !important;
-  max-height: 100vh !important;
+  max-height: 97vh !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
