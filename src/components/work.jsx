@@ -13,18 +13,6 @@ function Work() {
     const modalThumbnailsRef = useRef(null);
     const modalNavButtonsRef = useRef(null);
     
-    // Add these new effects for performance optimizations
-    useEffect(() => {
-        const cleanup = setupLazyAnimations();
-        return () => cleanup();
-    }, []);
-    
-    useEffect(() => {
-        const { setupProgressiveImages } = optimizeImagesForMobile();
-        const cleanupImages = setupProgressiveImages();
-        return () => cleanupImages();
-    }, []);
-    
     // Project data with Pexels images
     const projects = [
         {
@@ -133,35 +121,6 @@ function Work() {
             imagesRef: React.createRef()
         }
     ];
-    
-    // Preload background images when component mounts
-    useEffect(() => {
-        // Create data attributes with image URLs for the loader to detect
-        const preloadProjectImages = () => {
-            projects.forEach(project => {
-                project.images.forEach(imgUrl => {
-                    // Create a data attribute that the loader can detect
-                    const imgElement = document.createElement('div');
-                    imgElement.style.display = 'none';
-                    imgElement.dataset.bgImage = imgUrl;
-                    imgElement.className = 'preload-bg-image';
-                    document.body.appendChild(imgElement);
-                });
-            });
-        };
-        
-        preloadProjectImages();
-        
-        // Clean up
-        return () => {
-            const preloadElements = document.querySelectorAll('.preload-bg-image');
-            preloadElements.forEach(el => {
-                if (el.parentNode) {
-                    el.parentNode.removeChild(el);
-                }
-            });
-        };
-    }, []);
     
     useEffect(() => {
         if (!containerRef.current) return;
@@ -515,7 +474,7 @@ function Work() {
     
     return (
         <div ref={containerRef} className="relative h-full content-center py-12 md:py-24">
-            <h1 ref={headerRef} className="text-[6vh] md:text-[10vh] font-semibold uppercase inline-block" data-animate="fadeUp">Projects</h1>
+            <h1 ref={headerRef} className="text-[6vh] md:text-[10vh] font-semibold uppercase inline-block">Projects</h1>
             
             {projects.map((project, index) => (
                 <div 
@@ -528,8 +487,6 @@ function Work() {
                             <span 
                                 ref={project.nameRef} 
                                 className="inline-block font-medium"
-                                data-animate="fadeUp"
-                                data-delay={index * 0.1}
                             >
                                 {project.name}
                             </span>
@@ -538,8 +495,6 @@ function Work() {
                             <span 
                                 ref={project.typeRef}
                                 className="inline-block"
-                                data-animate="fadeUp"
-                                data-delay={index * 0.1 + 0.1}
                             >
                                 {project.type}
                             </span>
@@ -548,38 +503,33 @@ function Work() {
                             <span 
                                 ref={project.descRef}
                                 className="inline-block"
-                                data-animate="fadeUp"
-                                data-delay={index * 0.1 + 0.2}
                             >
                                 {project.description}
                             </span>
                         </div>
                     </div>
                     
-                    {/* UPDATED: Image grid - improved mobile layout with lazy loading */}
+                    {/* UPDATED: Image grid - improved mobile layout */}
                     <div 
                         ref={project.imagesRef} 
                         className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-10 py-4 gap-2"
                     >
-                        {project.images.map((img, imgIndex) => (
+                        {project.images.map((img, index) => (
                             <div 
-                                key={imgIndex} 
+                                key={index} 
                                 className="image-container overflow-hidden cursor-pointer transition-all h-32 sm:h-40 md:h-full aspect-square sm:aspect-auto rounded-sm shadow-sm"
-                                data-animate="fadeIn"
-                                data-delay={index * 0.05 + imgIndex * 0.03}
                                 style={{
                                     backgroundColor: "var(--bg-color)",
                                     opacity: 0.9
                                 }}
-                                onClick={() => openFullscreenImage(img, project.id, imgIndex)}
+                                onClick={() => openFullscreenImage(img, project.id, index)}
                             >
                                 <img 
-                                    src="" 
-                                    data-src={img} 
-                                    data-placeholder={img} 
-                                    alt={`${project.name} image ${imgIndex + 1}`}
+                                    src={img} 
+                                    alt={`${project.name} image ${index + 1}`}
                                     className="w-full h-full object-cover"
                                     onError={handleImageError}
+                                    loading="lazy"
                                 />
                             </div>
                         ))}
@@ -683,11 +633,9 @@ function Work() {
                             </div>
                         )}
                         
-                        {/* Fullscreen image - updated for progressive loading */}
+                        {/* Fullscreen image */}
                         <img 
-                            src="" 
-                            data-src={selectedImage} 
-                            data-placeholder={selectedImage}
+                            src={selectedImage.replace('w=600', 'w=1200')} // Load higher quality for fullscreen
                             alt="Fullscreen view"
                             className="max-h-3/5 max-w-full object-contain p-4 m-auto"
                             style={{
@@ -709,6 +657,7 @@ function Work() {
                                 style={{ 
                                     position: 'fixed',
                                     zIndex: 9999,
+                                    /*backgroundColor: 'var(--bg-color)',*/
                                     opacity: 0.95
                                 }}>
                                 <div className="flex md:flex-col flex-row gap-1 w-full md:pt-16">
@@ -731,9 +680,7 @@ function Work() {
                                             }}
                                         >
                                             <img 
-                                                src="" 
-                                                data-src={img}
-                                                data-placeholder={img}
+                                                src={img} 
                                                 alt={`Thumbnail ${idx + 1}`}
                                                 className="w-12 h-12 md:w-14 md:h-14 object-cover"
                                                 onError={handleImageError}
@@ -751,7 +698,6 @@ function Work() {
                                 style={{ 
                                     top: "12vh",
                                     color: 'var(--text-color)',
-                                    backgroundColor: 'rgba(var(--bg-color-rgb, 240,color: var(--text-color)',
                                     backgroundColor: 'rgba(var(--bg-color-rgb, 240, 240, 240), 0.7)',
                                     backdropFilter: 'blur(5px)'
                                 }}
