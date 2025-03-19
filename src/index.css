@@ -920,7 +920,6 @@ img.loaded {
   font-variant-numeric: tabular-nums;
 }
 
-/* Hide preload elements used for background image detection */
 .preload-bg-image {
   position: absolute;
   width: 0;
