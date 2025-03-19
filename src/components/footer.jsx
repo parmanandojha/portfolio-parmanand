@@ -109,6 +109,7 @@ function Footer() {
             <div ref={addToRefs} className="hidden md:block">Design & Developed by - Parmanand</div>
             <div>
                 <a href="/resume.pdf" target="_blank" className="no-underline text-black">
+                <a href="https://drive.google.com/file/d/11m2AFKY4K8ScmNmhJU_R_57dh0-sxu1J/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="no-underline text-black"></a>
                     <span ref={addToRefs} className="cursor-pointer relative inline-block">
                         Resume
                         <span className="link-underline absolute left-0 bottom-0 h-[1px] w-0 bg-black"></span>
