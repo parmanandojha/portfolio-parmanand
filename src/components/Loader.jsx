@@ -117,7 +117,7 @@ const Loader = ({ isLoading, setIsLoading }) => {
   return (
     <div
       ref={loaderRef}
-      className="fixed inset-0 z-50 flex items-center justify-center"
+      className="fixed inset-0 z-50 flex items-center justify-center font-(family-name:--Standerd)"
       style={{
         backgroundColor: "var(--bg-color)",
         color: "var(--text-color)"
