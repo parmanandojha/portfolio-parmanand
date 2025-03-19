@@ -286,7 +286,7 @@ function App() {
       
       {/* Main content with conditional opacity */}
       <div 
-        className={`font-(family-name:--Standerd) font-medium relative min-h-screen transition-opacity duration-500 ${isModalOpen ? 'modal-parent-open' : ''}`}
+        className={` font-[Standerd] font-(family-name:--Standerd) font-medium relative min-h-screen transition-opacity duration-500 ${isModalOpen ? 'modal-parent-open' : ''}`}
         style={{ opacity: isLoading ? 0 : 1 }}
       >
         <div className='fixed top-8 left-8 right-8 text-[1.55vh] z-[10]'>
