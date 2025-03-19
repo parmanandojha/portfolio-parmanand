@@ -136,6 +136,35 @@ function Work() {
         }
     ];
     
+    // Preload background images when component mounts
+    useEffect(() => {
+        // Create data attributes with image URLs for the loader to detect
+        const preloadProjectImages = () => {
+            projects.forEach(project => {
+                project.images.forEach(imgUrl => {
+                    // Create a data attribute that the loader can detect
+                    const imgElement = document.createElement('div');
+                    imgElement.style.display = 'none';
+                    imgElement.dataset.bgImage = imgUrl;
+                    imgElement.className = 'preload-bg-image';
+                    document.body.appendChild(imgElement);
+                });
+            });
+        };
+        
+        preloadProjectImages();
+        
+        // Clean up
+        return () => {
+            const preloadElements = document.querySelectorAll('.preload-bg-image');
+            preloadElements.forEach(el => {
+                if (el.parentNode) {
+                    el.parentNode.removeChild(el);
+                }
+            });
+        };
+    }, []);
+    
     useEffect(() => {
         if (!containerRef.current) return;
         
@@ -724,6 +753,7 @@ function Work() {
                                 style={{ 
                                     top: "12vh",
                                     color: 'var(--text-color)',
+                                    backgroundColor: 'rgba(var(--bg-color-rgb, 240,color: var(--text-color)',
                                     backgroundColor: 'rgba(var(--bg-color-rgb, 240, 240, 240), 0.7)',
                                     backdropFilter: 'blur(5px)'
                                 }}
