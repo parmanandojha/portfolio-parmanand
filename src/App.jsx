@@ -286,7 +286,7 @@ function App() {
       
       {/* Main content with conditional opacity */}
       <div 
-        className={`p-8 font-(family-name:--Standerd) font-medium relative min-h-screen transition-opacity duration-500 ${isModalOpen ? 'modal-parent-open' : ''}`}
+        className={`font-(family-name:--Standerd) font-medium relative min-h-screen transition-opacity duration-500 ${isModalOpen ? 'modal-parent-open' : ''}`}
         style={{ opacity: isLoading ? 0 : 1 }}
       >
         <div className='fixed top-8 left-8 right-8 text-[1.55vh] z-[10]'>
@@ -294,7 +294,7 @@ function App() {
         </div>
         
         {/* Changed class to ensure modals work properly */}
-        <div className='relative pb-20 overflow-visible modal-content-parent'>
+        <div className='p-8 relative pb-20 overflow-visible modal-content-parent'>
           {!isLoading && <AnimatedRoutes />}
         </div>
         

@@ -569,7 +569,7 @@ function Work() {
                         <div ref={modalContentRef} className="flex flex-col items-center justify-center w-full h-full relative" style={{ position: 'absolute', inset: 0, paddingBottom: '10vh' }}>
                         {/* Close button */}
                         <button 
-                            className="absolute top-14 md:top-24 right-4 p-2 rounded-full transition-all z-50"
+                            className="absolute top-20 md:top-24 right-4 p-2 rounded-full transition-all z-50"
                             style={{
                                 color: 'var(--text-color)',
                                 backgroundColor: 'rgba(var(--bg-color-rgb, 240, 240, 240), 0.3)',
