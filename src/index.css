@@ -311,7 +311,7 @@ body.modal-open .page-transition {
 
 /* Prevent image dragging which can interfere with transitions */
 .modal-image {
-  user-drag: none;
+  -user-drag: none;
   -webkit-user-drag: none;
   user-select: none;
   -moz-user-select: none;
@@ -434,7 +434,7 @@ body.modal-open .page-transition {
 
 /* Ensure the image doesn't get dragged */
 .slider-image {
-  user-drag: none;
+  -user-drag: none;
   -webkit-user-drag: none;
   user-select: none;
   -moz-user-select: none;
