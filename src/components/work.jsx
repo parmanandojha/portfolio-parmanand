@@ -1,7 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
-import { setupLazyAnimations } from "../utils/lazyAnimation";
-import { optimizeImagesForMobile } from "../utils/imageOptimizer";
 
 function Work() {
     const containerRef = useRef(null);
