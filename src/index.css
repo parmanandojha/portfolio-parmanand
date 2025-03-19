@@ -3,7 +3,7 @@
 /* Custom Font Declaration */
 @font-face {
   font-family: 'Standerd';
-  src: url('./assets/Webfont/Standerd-Medium.otf') format('otf');
+  src: url('./assets/Webfont/Standerd-Medium.woff') format('woff');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
