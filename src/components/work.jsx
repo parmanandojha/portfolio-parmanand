@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
+import { setupLazyAnimations } from "../utils/lazyAnimation";
+import { optimizeImagesForMobile } from "../utils/imageOptimizer";
 
 function Work() {
     const containerRef = useRef(null);
@@ -12,6 +14,18 @@ function Work() {
     const modalContentRef = useRef(null);
     const modalThumbnailsRef = useRef(null);
     const modalNavButtonsRef = useRef(null);
+    
+    // Add these new effects for performance optimizations
+    useEffect(() => {
+        const cleanup = setupLazyAnimations();
+        return () => cleanup();
+    }, []);
+    
+    useEffect(() => {
+        const { setupProgressiveImages } = optimizeImagesForMobile();
+        const cleanupImages = setupProgressiveImages();
+        return () => cleanupImages();
+    }, []);
     
     // Project data with Pexels images
     const projects = [
@@ -474,7 +488,7 @@ function Work() {
     
     return (
         <div ref={containerRef} className="relative h-full content-center py-12 md:py-24">
-            <h1 ref={headerRef} className="text-[6vh] md:text-[10vh] font-semibold uppercase inline-block">Projects</h1>
+            <h1 ref={headerRef} className="text-[6vh] md:text-[10vh] font-semibold uppercase inline-block" data-animate="fadeUp">Projects</h1>
             
             {projects.map((project, index) => (
                 <div 
@@ -487,6 +501,8 @@ function Work() {
                             <span 
                                 ref={project.nameRef} 
                                 className="inline-block font-medium"
+                                data-animate="fadeUp"
+                                data-delay={index * 0.1}
                             >
                                 {project.name}
                             </span>
@@ -495,6 +511,8 @@ function Work() {
                             <span 
                                 ref={project.typeRef}
                                 className="inline-block"
+                                data-animate="fadeUp"
+                                data-delay={index * 0.1 + 0.1}
                             >
                                 {project.type}
                             </span>
@@ -503,33 +521,38 @@ function Work() {
                             <span 
                                 ref={project.descRef}
                                 className="inline-block"
+                                data-animate="fadeUp"
+                                data-delay={index * 0.1 + 0.2}
                             >
                                 {project.description}
                             </span>
                         </div>
                     </div>
                     
-                    {/* UPDATED: Image grid - improved mobile layout */}
+                    {/* UPDATED: Image grid - improved mobile layout with lazy loading */}
                     <div 
                         ref={project.imagesRef} 
                         className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-10 py-4 gap-2"
                     >
-                        {project.images.map((img, index) => (
+                        {project.images.map((img, imgIndex) => (
                             <div 
-                                key={index} 
+                                key={imgIndex} 
                                 className="image-container overflow-hidden cursor-pointer transition-all h-32 sm:h-40 md:h-full aspect-square sm:aspect-auto rounded-sm shadow-sm"
+                                data-animate="fadeIn"
+                                data-delay={index * 0.05 + imgIndex * 0.03}
                                 style={{
                                     backgroundColor: "var(--bg-color)",
                                     opacity: 0.9
                                 }}
-                                onClick={() => openFullscreenImage(img, project.id, index)}
+                                onClick={() => openFullscreenImage(img, project.id, imgIndex)}
                             >
                                 <img 
-                                    src={img} 
-                                    alt={`${project.name} image ${index + 1}`}
+                                    src="" 
+                                    data-src={img} 
+                                    data-placeholder={img} 
+                                    alt={`${project.name} image ${imgIndex + 1}`}
                                     className="w-full h-full object-cover"
                                     onError={handleImageError}
-                                    loading="lazy"
                                 />
                             </div>
                         ))}
@@ -633,9 +656,11 @@ function Work() {
                             </div>
                         )}
                         
-                        {/* Fullscreen image */}
+                        {/* Fullscreen image - updated for progressive loading */}
                         <img 
-                            src={selectedImage.replace('w=600', 'w=1200')} // Load higher quality for fullscreen
+                            src="" 
+                            data-src={selectedImage} 
+                            data-placeholder={selectedImage}
                             alt="Fullscreen view"
                             className="max-h-3/5 max-w-full object-contain p-4 m-auto"
                             style={{
@@ -657,7 +682,6 @@ function Work() {
                                 style={{ 
                                     position: 'fixed',
                                     zIndex: 9999,
-                                    /*backgroundColor: 'var(--bg-color)',*/
                                     opacity: 0.95
                                 }}>
                                 <div className="flex md:flex-col flex-row gap-1 w-full md:pt-16">
@@ -680,7 +704,9 @@ function Work() {
                                             }}
                                         >
                                             <img 
-                                                src={img} 
+                                                src="" 
+                                                data-src={img}
+                                                data-placeholder={img}
                                                 alt={`Thumbnail ${idx + 1}`}
                                                 className="w-12 h-12 md:w-14 md:h-14 object-cover"
                                                 onError={handleImageError}
