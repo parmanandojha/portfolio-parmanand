@@ -126,97 +126,122 @@ function Work() {
         if (!containerRef.current) return;
         
         const ctx = gsap.context(() => {
-            // Main timeline for animation sequence - matching Info.jsx style
-            const tl = gsap.timeline({
+            // Master timeline with smoother easing
+            const masterTimeline = gsap.timeline({
                 defaults: {
-                    ease: "power3.out",
-                    duration: 1
+                    ease: "power2.out"
                 }
             });
             
-            // Setup initial states for main header
-            gsap.set(headerRef.current, { 
-                y: 100, 
-                opacity: 0 
+            // Header animation - smoother and slower
+            masterTimeline.fromTo(headerRef.current, 
+                { y: 80, opacity: 0 }, 
+                { 
+                    y: 0, 
+                    opacity: 1, 
+                    duration: 1.2, 
+                    ease: "power3.inout" 
+                }
+            );
+
+            // Animate projects one by one with nicer sequencing
+            projects.forEach((project, projectIndex) => {
+                // Get elements for this project
+                const textElements = [
+                    project.nameRef.current, 
+                    project.typeRef.current, 
+                    project.descRef.current
+                ];
+                
+                // Base delay with slight overlap for flow
+                const baseDelay = 0.7 + (projectIndex * 0.12);
+                
+                // Text elements animation - more subtle motion
+                masterTimeline.fromTo(textElements, 
+                    { y: 40, opacity: 0 },
+                    { 
+                        y: 0, 
+                        opacity: 1, 
+                        duration: 0.8, 
+                        stagger: 0.12,
+                        ease: "power3.out"
+                    },
+                    baseDelay
+                );
+                
+                // Image containers with smoother, more delicate animation
+                if (project.imagesRef.current) {
+                    const imageContainers = project.imagesRef.current.querySelectorAll('.image-container');
+                    
+                    // First set a uniform initial state
+                    gsap.set(imageContainers, { 
+                        y: 15, 
+                        opacity: 0,
+                        scale: 0.98
+                    });
+                    
+                    // Animate with a nice fluid motion
+                    masterTimeline.to(imageContainers, { 
+                        y: 0, 
+                        opacity: 1,
+                        scale: 1,
+                        duration: 0.9,
+                        ease: "power3.inout",
+                        stagger: {
+                            amount: 0.6, // Spread stagger over longer time for smoother effect
+                            from: "start",
+                            grid: "auto",
+                            ease: "power3.inout"
+                        },
+                        clearProps: "transform,opacity,scale" // Important for hover effects
+                    }, baseDelay + 0.25);
+                }
             });
             
-            // Setup initial states for each project's elements
-            projects.forEach(project => {
-                gsap.set(project.nameRef.current, { 
-                    y: 100, 
-                    opacity: 0 
-                });
-                
-                gsap.set(project.typeRef.current, { 
-                    y: 100, 
-                    opacity: 0 
-                });
-                
-                gsap.set(project.descRef.current, { 
-                    y: 100, 
-                    opacity: 0 
-                });
-                
-                gsap.set(project.imagesRef.current.querySelectorAll('.image-container'), { 
-                    y: 50,
-                    opacity: 0
-                });
-            });
-            
-            // Animate main header first
-            tl.to(headerRef.current, { y: 0, opacity: 1 });
-            
-            // Then animate each project with proper staggering and overlaps
-            projects.forEach((project, index) => {
-                const projectTl = gsap.timeline({
-                    defaults: {
-                        ease: "power3.out",
-                        duration: 1
-                    }
-                });
-                
-                // Stagger animation starting points based on project index
-                const startDelay = index * 0.3;
-                
-                // Add project animations to main timeline with delay
-                tl.add(projectTl, startDelay);
-                
-                // Animation sequence for each project - matching Info.jsx pattern
-                projectTl.to(project.nameRef.current, { y: 0, opacity: 1 })
-                  .to(project.typeRef.current, { y: 0, opacity: 1 }, "-=0.7")
-                  .to(project.descRef.current, { y: 0, opacity: 1 }, "-=0.7")
-                  .to(project.imagesRef.current.querySelectorAll('.image-container'), { 
-                      y: 0, 
-                      opacity: 1, 
-                      stagger: 0.05,
-                      duration: 0.8
-                  }, "-=0.5");
-            });
-            
-            // Add hover effect for images
-            document.querySelectorAll('.image-container').forEach(container => {
-                container.addEventListener('mouseenter', () => {
-                    gsap.to(container, {
+            // Set up hover effects - smoother transitions
+            const setupHoverEffects = () => {
+                document.querySelectorAll('.image-container').forEach(container => {
+                    // Create hover animations
+                    const enterTl = gsap.timeline({ paused: true });
+                    const leaveTl = gsap.timeline({ paused: true });
+                    
+                    // Smooth enter animation
+                    enterTl.to(container, {
                         y: -5,
-                        boxShadow: "0 10px 20px rgba(0,0,0,0.1)",
-                        duration: 0.3,
-                        ease: 'power2.out'
+                        scale: 1.02,
+                        boxShadow: "0 15px 25px rgba(0,0,0,0.08)",
+                        duration: 0.4,
+                        ease: "power3.out"
                     });
-                });
-                
-                container.addEventListener('mouseleave', () => {
-                    gsap.to(container, {
+                    
+                    // Smooth leave animation
+                    leaveTl.to(container, {
                         y: 0,
+                        scale: 1,
                         boxShadow: "0 0 0 rgba(0,0,0,0)",
-                        duration: 0.3,
-                        ease: 'power2.in'
+                        duration: 0.4,
+                        ease: "power3.inOut"
+                    });
+                    
+                    // Apply hover events
+                    container.addEventListener('mouseenter', () => {
+                        leaveTl.pause(0); // Pause and reset leave animation
+                        enterTl.restart(); // Start enter animation
+                    });
+                    
+                    container.addEventListener('mouseleave', () => {
+                        enterTl.pause(); // Pause enter animation
+                        leaveTl.restart(); // Start leave animation
                     });
                 });
-            });
+            };
+            
+            // Set up hover effects after initial animations complete
+            setTimeout(setupHoverEffects, 2500);
             
         }, containerRef);
         
-        return () => ctx.revert(); // Cleanup
+        return () => ctx.revert();
     }, []);
     
     // Fallback image handling
@@ -303,7 +328,7 @@ function Work() {
         return () => observer.disconnect();
     }, [currentImageIndex, modalRef]);
     
-    // Open fullscreen modal with animation
+    // Open fullscreen modal with smoother animation
     const openFullscreenImage = (imageUrl, projectId, imageIndex) => {
         // First set the state so the modal renders
         setSelectedImage(imageUrl);
@@ -335,75 +360,74 @@ function Work() {
                 
                 // Make modal visible but fully transparent to start animation from
                 gsap.set(modalElement, { 
-                    opacity: 1,
                     backgroundColor: "var(--bg-color)",
                     // Start with full transparency
                     opacity: 0,
                     visibility: "visible"
                 });
                 
-                // Setup initial states for content and thumbnails
+                // Setup initial states for content and thumbnails with smoother positioning
                 gsap.set(contentElement, { 
                     opacity: 0, 
-                    scale: 0.92,
-                    y: 10
+                    scale: 0.95,
+                    y: 15
                 });
                 
                 if (thumbnailsElement) {
                     gsap.set(thumbnailsElement, { 
                         opacity: 0, 
-                        x: -20 
+                        x: -15
                     });
                 }
                 
                 if (navButtons && navButtons.length) {
                     gsap.set(navButtons, { 
                         opacity: 0, 
-                        scale: 0.8 
+                        scale: 0.9
                     });
                 }
                 
-                // Create a timeline for opening animation with slight delay
+                // Create a timeline for opening animation with smoother easing
                 const tl = gsap.timeline({
                     defaults: {
-                        ease: "power2.out",
-                        duration: 0.4
+                        ease: "power3.out",
+                        duration: 0.5
                     }
                 });
                 
                 // Animation sequence
                 tl.to(modalElement, { 
                     opacity: 1,
-                    duration: 0.5
+                    duration: 0.6
                 })
                 .to(contentElement, { 
                     opacity: 1, 
                     scale: 1,
                     y: 0,
-                    duration: 0.5
-                }, "-=0.4")
+                    duration: 0.6
+                }, "-=0.5") // Overlap for smoother feel
                 
                 if (thumbnailsElement) {
                     tl.to(thumbnailsElement, { 
                         opacity: 1, 
                         x: 0,
                         duration: 0.5
-                    }, "-=0.3");
+                    }, "-=0.4"); // Slight delay
                 }
                 
                 if (navButtons && navButtons.length) {
                     tl.to(navButtons, { 
                         opacity: 1, 
                         scale: 1, 
-                        stagger: 0.05,
-                        duration: 0.4
-                    }, "-=0.3");
+                        stagger: 0.08, // Increased stagger
+                        duration: 0.5
+                    }, "-=0.4");
                 }
             });
         });
     };
     
-    // Close fullscreen modal with animation
+    // Close fullscreen modal with smoother animation
     const closeFullscreenImage = () => {
         // Get elements for animation
         const modalElement = modalRef.current;
@@ -411,11 +435,11 @@ function Work() {
         const thumbnailsElement = modalThumbnailsRef.current;
         const navButtons = modalNavButtonsRef.current?.querySelectorAll('button');
         
-        // Create a timeline for closing animation
+        // Create a timeline for closing animation with better easing
         const tl = gsap.timeline({
             defaults: {
-                ease: "power3.in",
-                duration: 0.4
+                ease: "power3.inOut", // Smoother easing
+                duration: 0.5
             },
             onComplete: () => {
                 // Reset state after animation completes
@@ -438,10 +462,10 @@ function Work() {
         });
         
         // Animation sequence
-        tl.to(navButtons, { opacity: 0, scale: 0.8, stagger: 0.05 })
-          .to(thumbnailsElement, { opacity: 0, x: -20 }, "-=0.3")
-          .to(contentElement, { opacity: 0, scale: 0.9 }, "-=0.3")
-          .to(modalElement, { opacity: 0 }, "-=0.2");
+        tl.to(navButtons, { opacity: 0, scale: 0.9, stagger: 0.06 })
+          .to(thumbnailsElement, { opacity: 0, x: -15 }, "-=0.4")
+          .to(contentElement, { opacity: 0, scale: 0.95, y: 10 }, "-=0.4")
+          .to(modalElement, { opacity: 0, duration: 0.6 }, "-=0.3");
     };
     
     // Add keyboard navigation for the image slider
@@ -509,24 +533,26 @@ function Work() {
                         </div>
                     </div>
                     
-                    {/* UPDATED: Image grid - improved mobile layout */}
+                    {/* Image grid with improved animation */}
                     <div 
                         ref={project.imagesRef} 
                         className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-10 py-4 gap-2"
                     >
-                        {project.images.map((img, index) => (
+                        {project.images.map((img, imageIndex) => (
                             <div 
-                                key={index} 
-                                className="image-container overflow-hidden cursor-pointer transition-all h-full sm:aspect-auto rounded-sm shadow-sm"
+                                key={imageIndex} 
+                                data-project-id={project.id}
+                                data-image-index={imageIndex}
+                                className="image-container overflow-hidden cursor-pointer h-full sm:aspect-auto rounded-sm shadow-sm"
                                 style={{
                                     backgroundColor: "var(--bg-color)",
-                                    opacity: 0.9
+                                    opacity: 0.9,
                                 }}
-                                onClick={() => openFullscreenImage(img, project.id, index)}
+                                onClick={() => openFullscreenImage(img, project.id, imageIndex)}
                             >
                                 <img 
                                     src={img} 
-                                    alt={`${project.name} image ${index + 1}`}
+                                    alt={`${project.name} image ${imageIndex + 1}`}
                                     className="w-full h-full object-cover"
                                     onError={handleImageError}
                                     loading="lazy"
