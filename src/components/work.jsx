@@ -474,7 +474,7 @@ function Work() {
     
     return (
         <div ref={containerRef} className="relative h-full content-center py-12 md:py-24">
-            <h1 ref={headerRef} className="text-[6vh] md:text-[10vh] font-semibold uppercase inline-block">Selected Projects/</h1>
+            <h1 ref={headerRef} className="text-[6vh] md:text-[10vh] pt-10 md:pt-0 pb-10 font-semibold uppercase inline-block leading-[1]">Selected <br></br>Projects/</h1>
             
             {projects.map((project, index) => (
                 <div 
