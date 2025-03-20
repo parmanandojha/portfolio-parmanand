@@ -83,7 +83,7 @@ function Footer() {
     return (
         <div 
             ref={footerRef} 
-            className="grid grid-cols-4 p-4 rounded-md backdrop-blur-sm transition-all duration-300"
+            className="grid grid-cols-3 md:grid-cols-4 pt-4 pb-4 backdrop-blur-sm transition-all duration-300"
             style={{
                 backgroundColor: isDarkTheme 
                     ? 'rgba(20, 20, 20, 0.85)' 

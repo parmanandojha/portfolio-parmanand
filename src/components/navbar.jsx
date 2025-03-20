@@ -88,7 +88,7 @@ function Navbar() {
     return (
         <div 
             ref={navRef} 
-            className="grid grid-cols-4 p-4 rounded-md backdrop-blur-sm transition-all duration-300"
+            className="grid grid-cols-4 pt-4 pb-4 backdrop-blur-sm transition-all duration-300"
             style={{
                 backgroundColor: "var(--bg-color)",
                 opacity: 0.85

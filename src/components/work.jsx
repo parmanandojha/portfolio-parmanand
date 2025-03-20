@@ -517,7 +517,7 @@ function Work() {
                         {project.images.map((img, index) => (
                             <div 
                                 key={index} 
-                                className="image-container overflow-hidden cursor-pointer transition-all h-32 sm:h-40 md:h-full aspect-square sm:aspect-auto rounded-sm shadow-sm"
+                                className="image-container overflow-hidden cursor-pointer transition-all h-full sm:aspect-auto rounded-sm shadow-sm"
                                 style={{
                                     backgroundColor: "var(--bg-color)",
                                     opacity: 0.9
@@ -569,7 +569,7 @@ function Work() {
                         <div ref={modalContentRef} className="flex flex-col items-center justify-center w-full h-full relative" style={{ position: 'absolute', inset: 0, paddingBottom: '10vh' }}>
                         {/* Close button */}
                         <button 
-                            className="absolute top-20 md:top-24 right-4 p-2 rounded-full transition-all z-50"
+                            className="absolute top-20 right-4 p-2 rounded-full transition-all z-50"
                             style={{
                                 color: 'var(--text-color)',
                                 backgroundColor: 'rgba(var(--bg-color-rgb, 240, 240, 240), 0.3)',

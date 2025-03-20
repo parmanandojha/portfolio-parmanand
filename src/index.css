@@ -237,11 +237,10 @@ button[aria-label="Next image"] {
   width: 100% !important;
   height: 90% !important;
   max-width: 100vw !important;
-  max-height: 97vh !important;
+  max-height: 98vh !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  background-color: white !important;
   margin: 0 !important;
   padding: 0 !important;
   overflow: hidden !important;
@@ -472,7 +471,6 @@ body.modal-open .page-transition {
 
 /* Better image positioning in modal */
 .modal-container img {
-  max-height: 70vh !important;
   height: auto !important;
   margin: auto !important;
   object-fit: contain !important;
@@ -481,9 +479,7 @@ body.modal-open .page-transition {
 
 /* Adjust modal content vertical centering */
 .modal-container .flex.flex-col.items-center.justify-center {
-  padding-bottom: 10vh !important;
   justify-content: flex-start !important;
-  padding-top: 10vh !important;
 }
 
 /* Ensure mobile image counter is visible */
