@@ -18,7 +18,7 @@ function Work() {
         {
             id: 1,
             name: "Exponify",
-            type: "Website Design",
+            type: "/ Website Design",
             description: "",
             images: [
                 "project images/Exponify1.webp", 
@@ -40,7 +40,7 @@ function Work() {
         {
             id: 2,
             name: "Ila",
-            type: "Branding",
+            type: "/ Branding",
             description: "",
             images: [
                 "project images/ila1.webp", 
@@ -62,7 +62,7 @@ function Work() {
         {
             id: 3,
             name: "SmartTek",
-            type: "Branding, UI/UX",
+            type: "/ Branding, UI/UX",
             description: "",
             images: [
                 "project images/smarttek1.webp", 
@@ -83,7 +83,7 @@ function Work() {
         {
             id: 4,
             name: "Haven",
-            type: "UI/UX",
+            type: "/ UI/UX",
             description: "",
             images: [
                 "project images/Haven1.webp", 
@@ -101,7 +101,7 @@ function Work() {
         {
             id: 5,
             name: "Maven",
-            type: "Branding",
+            type: "/ Branding",
             description: "",
             images: [
                 "project images/maven1.webp", 
