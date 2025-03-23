@@ -92,6 +92,30 @@ function App() {
     };
   }, [isLoading, isTouchDevice]);
 
+  // When loading completes, ensure all assets are processed
+  useEffect(() => {
+    if (!isLoading) {
+      // When loading completes, give the browser a moment to process loaded resources
+      const timeoutId = setTimeout(() => {
+        // Force a repaint to ensure everything is properly displayed
+        document.body.style.display = 'none';
+        document.body.offsetHeight; // Trigger reflow
+        document.body.style.display = '';
+        
+        // Initialize effects with a delay
+        if (!isTouchDevice) {
+          setTimeout(() => {
+            initMagneticEffect();
+            initCursorTrail();
+            enhanceNavigation();
+          }, 500);
+        }
+      }, 300);
+      
+      return () => clearTimeout(timeoutId);
+    }
+  }, [isLoading, isTouchDevice]);
+
   // ============ INTEGRATED MAGNETIC EFFECT FUNCTIONS ============
 
   // Utility function to add magnetic effect to elements
@@ -181,7 +205,6 @@ function App() {
     for (let i = 0; i < trailCount; i++) {
       const trail = document.createElement('div');
       trail.className = 'cursor-trail';
-      trail.style.opacity = (1 - i / trailCount) * 0.3;
       document.body.appendChild(trail);
       trails.push({
         element: trail,
@@ -287,7 +310,10 @@ function App() {
       {/* Main content with conditional opacity */}
       <div 
         className={` font-[Standerd] font-(family-name:--Standerd) font-medium relative min-h-screen transition-opacity duration-500 ${isModalOpen ? 'modal-parent-open' : ''}`}
-        style={{ opacity: isLoading ? 0 : 1 }}
+        style={{ 
+          opacity: isLoading ? 0 : 1,
+          transition: "opacity 0.6s ease-in-out" 
+        }}
       >
         <div className='fixed top-8 left-8 right-8 text-[1.55vh] z-[10]'>
           <Navbar />

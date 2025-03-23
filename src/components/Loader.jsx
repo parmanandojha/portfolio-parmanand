@@ -1,176 +1,150 @@
 import React, { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 
+// Define all project images to preload
+const PROJECT_IMAGES = [
+  // Exponify
+  "project images/Exponify1.webp", 
+  "project images/Exponify2.webp", 
+  "project images/Exponify3.webp", 
+  "project images/Exponify4.webp", 
+  "project images/Exponify5.webp", 
+  "project images/Exponify6.webp", 
+  "project images/Exponify7.webp", 
+  "project images/Exponify8.webp", 
+  "project images/Exponify9.webp", 
+  "project images/Exponify10.webp",
+  // Ila
+  "project images/ila1.webp", 
+  "project images/ila2.webp", 
+  "project images/ila3.webp", 
+  "project images/ila4.webp", 
+  "project images/ila5.webp", 
+  "project images/ila6.webp", 
+  "project images/ila7.webp", 
+  "project images/ila8.webp", 
+  "project images/ila9.webp", 
+  "project images/ila10.webp",
+  // SmartTek
+  "project images/smarttek1.webp", 
+  "project images/smarttek2.webp",
+  "project images/smarttek3.webp",
+  "project images/smarttek4.webp",
+  "project images/smarttek5.webp",
+  "project images/smarttek6.webp", 
+  "project images/smarttek7.webp",
+  "project images/smarttek8.webp", 
+  "project images/smarttek9.webp",
+  // Haven
+  "project images/Haven1.webp", 
+  "project images/Haven2.webp",
+  "project images/Haven4.webp",
+  "project images/Haven7.webp",
+  "project images/Haven8.webp",
+  "project images/Haven9.webp",
+  // Maven
+  "project images/maven1.webp", 
+  "project images/maven2.webp",
+  "project images/maven3.webp",
+  "project images/maven4.webp",
+  "project images/maven5.webp",
+  "project images/maven6.webp",
+  "project images/maven7.webp", 
+  "project images/maven8.webp",
+  "project images/maven9.webp",
+  "project images/maven10.webp",
+];
+
 const Loader = ({ isLoading, setIsLoading }) => {
   const loaderRef = useRef(null);
   const loaderContentRef = useRef(null);
   const counterRef = useRef(null);
   const progressBarRef = useRef(null);
-  const [imagesLoaded, setImagesLoaded] = useState(false);
-  const [backgroundImagesLoaded, setBackgroundImagesLoaded] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [animationComplete, setAnimationComplete] = useState(false);
   
-  // Track regular image loading
+  // Create hidden preload container for images to force browser to load them
   useEffect(() => {
     if (!isLoading) return;
     
-    const images = document.querySelectorAll('img');
-    let loadedImagesCount = 0;
-    const totalImages = images.length;
+    // Create container to hold preloaded images
+    const preloadContainer = document.createElement('div');
+    preloadContainer.style.position = 'absolute';
+    preloadContainer.style.width = '0px';
+    preloadContainer.style.height = '0px';
+    preloadContainer.style.opacity = '0';
+    preloadContainer.style.overflow = 'hidden';
+    preloadContainer.style.pointerEvents = 'none';
+    document.body.appendChild(preloadContainer);
     
-    // If there are no images, mark as loaded
-    if (totalImages === 0) {
-      setImagesLoaded(true);
-      return;
-    }
+    // Total images to track loading
+    const totalImages = PROJECT_IMAGES.length;
+    let loadedImages = 0;
     
-    const imageLoaded = () => {
-      loadedImagesCount++;
-      if (loadedImagesCount === totalImages) {
-        setImagesLoaded(true);
-      }
-    };
-    
-    // Add load event listeners to all images
-    images.forEach(img => {
-      if (img.complete) {
-        imageLoaded();
-      } else {
-        img.addEventListener('load', imageLoaded);
-        img.addEventListener('error', imageLoaded); // Count failed images as loaded
-      }
+    // Create image elements to force browser to load them
+    PROJECT_IMAGES.forEach(imageSrc => {
+      const img = new Image();
+      
+      img.onload = () => {
+        loadedImages++;
+        const newProgress = Math.round((loadedImages / totalImages) * 100);
+        setProgress(newProgress);
+        
+        if (loadedImages === totalImages) {
+          // All images loaded - show 100% for a moment then complete
+          setTimeout(() => {
+            setAnimationComplete(true);
+          }, 500); // Allow 100% to show briefly
+        }
+      };
+      
+      img.onerror = () => {
+        // Count errors as loaded to prevent hanging
+        loadedImages++;
+        const newProgress = Math.round((loadedImages / totalImages) * 100);
+        setProgress(newProgress);
+        
+        if (loadedImages === totalImages) {
+          setTimeout(() => {
+            setAnimationComplete(true);
+          }, 500);
+        }
+      };
+      
+      // Set src to trigger loading
+      img.src = imageSrc;
+      preloadContainer.appendChild(img);
     });
     
-    // Cleanup function
     return () => {
-      images.forEach(img => {
-        img.removeEventListener('load', imageLoaded);
-        img.removeEventListener('error', imageLoaded);
-      });
+      // Clean up preload container
+      if (document.body.contains(preloadContainer)) {
+        document.body.removeChild(preloadContainer);
+      }
     };
   }, [isLoading]);
   
-  // Track background images loading
+  // Update progress bar based on image loading progress
   useEffect(() => {
-    if (!isLoading) return;
-    
-    // Create a list of all background image URLs
-    const backgroundUrls = [];
-    
-    // Find all elements with background images
-    const elementsWithBg = document.querySelectorAll('[style*="background-image"]');
-    elementsWithBg.forEach(el => {
-      const style = window.getComputedStyle(el);
-      const bgImage = style.backgroundImage;
-      if (bgImage && bgImage !== 'none') {
-        // Extract URL from background-image: url("...")
-        const match = bgImage.match(/url\(['"]?([^'"]+)['"]?\)/i);
-        if (match && match[1]) {
-          backgroundUrls.push(match[1]);
-        }
-      }
-    });
-    
-    // Check CSS for background images in classes that might be applied later
-    const styleSheets = document.styleSheets;
-    try {
-      for (let i = 0; i < styleSheets.length; i++) {
-        const sheet = styleSheets[i];
-        const rules = sheet.cssRules || sheet.rules;
-        if (!rules) continue;
-        
-        for (let j = 0; j < rules.length; j++) {
-          const rule = rules[j];
-          if (rule.style && rule.style.backgroundImage) {
-            const bgImage = rule.style.backgroundImage;
-            if (bgImage && bgImage !== 'none') {
-              const match = bgImage.match(/url\(['"]?([^'"]+)['"]?\)/i);
-              if (match && match[1]) {
-                backgroundUrls.push(match[1]);
-              }
-            }
-          }
-        }
-      }
-    } catch (e) {
-      // CORS might prevent accessing some stylesheets
-      console.warn("Could not access all stylesheets due to security restrictions");
+    if (counterRef.current) {
+      counterRef.current.textContent = `${progress}%`;
     }
     
-    // Also check for project images in our Work component
-    const projectBgImages = [];
-    try {
-      const projectImagesElements = document.querySelectorAll('.preload-bg-image');
-      projectImagesElements.forEach(el => {
-        if (el.dataset && el.dataset.bgImage) {
-          projectBgImages.push(el.dataset.bgImage);
-        }
+    if (progressBarRef.current) {
+      gsap.to(progressBarRef.current, {
+        scaleX: progress / 100,
+        duration: 0.3,
+        ease: "power1.out"
       });
-    } catch (e) {
-      console.warn("Error while collecting project background images", e);
     }
-    
-    // Combine all background image URLs
-    const allBgImages = [...new Set([...backgroundUrls, ...projectBgImages])];
-    
-    // If there are no background images, mark as loaded
-    if (allBgImages.length === 0) {
-      setBackgroundImagesLoaded(true);
-      return;
-    }
-    
-    // Load all background images
-    let loadedBgCount = 0;
-    
-    const bgImageLoaded = () => {
-      loadedBgCount++;
-      
-      // Update progress based on background images too
-      if (counterRef.current && progressBarRef.current) {
-        const combinedProgress = Math.round(
-          (loadedBgCount / allBgImages.length) * 100
-        );
-        
-        // Update counter text with combined progress
-        counterRef.current.textContent = `${combinedProgress}%`;
-        
-        // Update progress bar
-        gsap.to(progressBarRef.current, {
-          scaleX: combinedProgress / 100,
-          duration: 0.3,
-          ease: "power1.out"
-        });
-      }
-      
-      if (loadedBgCount === allBgImages.length) {
-        setBackgroundImagesLoaded(true);
-      }
-    };
-    
-    // Preload all background images
-    allBgImages.forEach(bgUrl => {
-      const img = new Image();
-      img.onload = bgImageLoaded;
-      img.onerror = bgImageLoaded; // Count failed loads too
-      img.src = bgUrl;
-    });
-    
-  }, [isLoading]);
+  }, [progress]);
   
   // Handle loader animation
   useEffect(() => {
     if (!isLoading) return;
     
-    let progress = 0;
-    const duration = 2.5; // Total duration in seconds
-    const interval = 10; // Update interval in ms
-    const increment = (100 / (duration * 1000)) * interval;
-    
     const tl = gsap.timeline({
-      defaults: { ease: "power2.inOut" },
-      onComplete: () => {
-        setAnimationComplete(true);
-      }
+      defaults: { ease: "power2.inOut" }
     });
     
     // Set initial state
@@ -179,65 +153,28 @@ const Loader = ({ isLoading, setIsLoading }) => {
     
     // Animate in
     tl.to(loaderContentRef.current, { opacity: 1, y: 0, duration: 0.5 });
-    
-    // Only run this auto-increment if we don't have concrete progress data
-    if (!backgroundImagesLoaded) {
-      // Handle progress counter and progress bar
-      const updateProgress = () => {
-        if (!counterRef.current || !progressBarRef.current) return;
-        
-        progress += increment;
-        const roundedProgress = Math.min(Math.round(progress), 99); // Cap at 99% until actually loaded
-        
-        // Update counter text
-        counterRef.current.textContent = `${roundedProgress}%`;
-        
-        // Update progress bar
-        gsap.to(progressBarRef.current, {
-          scaleX: progress / 100,
-          duration: interval / 1000,
-          ease: "none"
-        });
-        
-        if (progress < 99) { // Only go to 99% automatically
-          setTimeout(updateProgress, interval);
-        }
-      };
-      
-      // Start progress updates
-      updateProgress();
-    }
   }, [isLoading]);
   
-  // Handle hiding the loader when both animation is complete, regular images are loaded,
-  // AND background images are loaded
+  // Handle hiding the loader when animation is complete and images are loaded
   useEffect(() => {
-    if (animationComplete && imagesLoaded && backgroundImagesLoaded && loaderRef.current) {
-      // Show 100% before hiding
-      if (counterRef.current) {
-        counterRef.current.textContent = "100%";
-      }
-      
-      if (progressBarRef.current) {
-        gsap.to(progressBarRef.current, {
-          scaleX: 1,
-          duration: 0.3,
-          ease: "power2.out"
-        });
-      }
-      
-      // Add a small delay to show the 100% state
+    if (animationComplete && loaderRef.current && progress >= 100) {
+      // Add a small delay to ensure everything is ready
       setTimeout(() => {
-        // Hide loader only when all conditions are met
+        // Hide loader
         gsap.to(loaderRef.current, {
           yPercent: -100,
           duration: 0.8,
           ease: "power3.inOut",
-          onComplete: () => setIsLoading(false)
+          onComplete: () => {
+            // Wait a bit before fully removing loader
+            setTimeout(() => {
+              setIsLoading(false);
+            }, 200);
+          }
         });
       }, 400);
     }
-  }, [animationComplete, imagesLoaded, backgroundImagesLoaded, setIsLoading]);
+  }, [animationComplete, progress, setIsLoading]);
   
   // Don't render if not loading
   if (!isLoading) return null;
