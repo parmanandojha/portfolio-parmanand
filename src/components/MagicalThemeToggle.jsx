@@ -3,7 +3,7 @@ import { gsap } from "gsap";
 
 // Five beautiful contrasting color pairs
 const COLOR_PAIRS = [
-  { bg: "#ffffff", text: "#000000", name: "Classic" },       // Classic black on white
+  { bg: "#fafafa", text: "#0101010", name: "Classic" },       // Classic black on white
   { bg: "#0f0e17", text: "#fffffe", name: "Midnight" },      // White on dark blue-black
   { bg: "#f5f5f5", text: "#562c2c", name: "Mocha" },         // Deep burgundy on off-white
   { bg: "#2d334a", text: "#f8cb65", name: "Celestial" },     // Gold on deep blue
