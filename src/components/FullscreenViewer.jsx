@@ -261,7 +261,7 @@ function FullscreenViewer({
                 </svg>
               </button>
               
-              {/* Next button */}
+              {/* Next button - FIXED */}
               <button 
                 className="p-3 rounded-full transition-all"
                 style={{
@@ -274,7 +274,7 @@ function FullscreenViewer({
                   if (currentProject) {
                     const newIndex = (currentImageIndex + 1) % currentProject.images.length;
                     setCurrentImageIndex(newIndex);
-                    setCurrentImage(project.images[newIndex]);
+                    setCurrentImage(currentProject.images[newIndex]); // Fixed: using currentProject instead of project
                   }
                 }}
               >
