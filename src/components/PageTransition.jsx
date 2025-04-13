@@ -1,6 +1,11 @@
 import React, { useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { gsap } from 'gsap';
+import { 
+  setInitialPageState, 
+  animatePageTransition, 
+  cleanupAnimation 
+} from '../animations/index';
 
 const PageTransition = ({ children }) => {
   const location = useLocation();
@@ -13,41 +18,26 @@ const PageTransition = ({ children }) => {
     
     // Skip animation on initial render
     if (prevPathRef.current === currentPath) {
-      gsap.set(pageRef.current, { opacity: 1, y: 0 });
+      setInitialPageState(pageRef.current);
       return;
     }
 
     // Handle page transition animation
-    const tl = gsap.timeline({
-      defaults: {
-        ease: "power2.inOut",
-      }
-    });
-
-    // Exit animation
-    tl.to(pageRef.current, {
-      opacity: 0,
-      y: -20,
-      duration: 0.5,
-    })
-    // Update content and prepare for entrance animation
-    .set(pageRef.current, {
-      y: 40,
-      onComplete: () => {
+    const ctx = gsap.context(() => {
+      // Define completion callback
+      const onComplete = () => {
         // Update the previous path ref after animation
         prevPathRef.current = currentPath;
         
         // Ensure we're scrolled to top on new page
         window.scrollTo(0, 0);
-      }
-    })
-    // Entrance animation
-    .to(pageRef.current, {
-      opacity: 1,
-      y: 0,
-      duration: 0.6,
+      };
+      
+      // Run the transition animation
+      animatePageTransition(pageRef.current, onComplete);
     });
     
+    return () => cleanupAnimation(ctx);
   }, [location]);
 
   return (

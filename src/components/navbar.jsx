@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { gsap } from "gsap";
 import MagicalThemeToggle from "./MagicalThemeToggle";
+import { initNavbarAnimations, setupNavLinkHoverEffects, cleanupAnimation } from "../animations/index";
 
 function Navbar() {
     const [time, setTime] = useState("");
     const navRef = useRef(null);
     const itemsRef = useRef([]);
+    const location = useLocation();
     
     // Update Delhi time every second
     useEffect(() => {
@@ -35,48 +37,14 @@ function Navbar() {
         if (!navRef.current) return;
         
         const ctx = gsap.context(() => {
-            // Set initial state
-            gsap.set(itemsRef.current, { 
-                y: -20, 
-                opacity: 0 
-            });
+            // Initialize animations from our animation module
+            initNavbarAnimations(itemsRef);
             
-            // Create animation
-            gsap.to(itemsRef.current, {
-                y: 0,
-                opacity: 1,
-                stagger: 0.1,
-                duration: 0.8,
-                ease: "power2.out",
-                delay: 0.2
-            });
-            
-            // Set up hover underline animations
-            itemsRef.current.forEach(item => {
-                if (item && item.textContent) {
-                    const underline = item.querySelector('.link-underline');
-                    if (underline) {
-                        item.addEventListener("mouseenter", () => {
-                            gsap.to(underline, {
-                                width: "100%",
-                                duration: 0.3,
-                                ease: "power1.out"
-                            });
-                        });
-                        
-                        item.addEventListener("mouseleave", () => {
-                            gsap.to(underline, {
-                                width: "0%",
-                                duration: 0.3,
-                                ease: "power1.in"
-                            });
-                        });
-                    }
-                }
-            });
+            // Set up hover effects for links
+            setupNavLinkHoverEffects(itemsRef);
         }, navRef);
         
-        return () => ctx.revert();
+        return () => cleanupAnimation(ctx);
     }, []);
     
     const addToRefs = (el) => {
@@ -88,35 +56,41 @@ function Navbar() {
     return (
         <div 
             ref={navRef} 
-            className="grid grid-cols-4 pt-4 pb-4 backdrop-blur-sm transition-all duration-300"
+            className="grid grid-cols-4 py-4 backdrop-blur-sm transition-all duration-300"
             style={{
                 backgroundColor: "var(--bg-color)",
                 opacity: 0.85
             }}
         >
             <div>
-                <Link to="/" className="no-underline">
-                    <span ref={addToRefs} className="cursor-pointer relative inline-block">
-                        Index
-                        <span className="link-underline absolute left-0 bottom-0 h-[1px] w-0 bg-current"></span>
-                    </span>
-                </Link>
-            </div>
-            <div className="col-span-2">
                 <Link to="/info" className="no-underline">
-                    <span ref={addToRefs} className="cursor-pointer relative inline-block">
+                    <span 
+                        ref={addToRefs} 
+                        className={`cursor-pointer relative inline-block ${location.pathname === '/info' ? 'font-bold' : ''}`}
+                    >
                         Info
-                        <span className="link-underline absolute left-0 bottom-0 h-[1px] w-0 bg-current"></span>
+                        <span className={`link-underline absolute left-0 bottom-0 h-[1px] ${location.pathname === '/info' ? 'w-full' : 'w-0'} bg-current`}></span>
                     </span>
                 </Link>
             </div>
-            <div className="flex flex-row justify-between items-center">
-                <div ref={addToRefs}>
-                    {/* Replace the switch with magical theme toggle */}
-                    <MagicalThemeToggle />
-                </div>
+            <div className="col-span-1">
+                <Link to="/work" className="no-underline">
+                    <span 
+                        ref={addToRefs} 
+                        className={`cursor-pointer relative inline-block ${location.pathname === '/work' ? 'font-bold' : ''}`}
+                    >
+                        Work
+                        <span className={`link-underline absolute left-0 bottom-0 h-[1px] ${location.pathname === '/work' ? 'w-full' : 'w-0'} bg-current`}></span>
+                    </span>
+                </Link>
+            </div>
+            <div className="col-span-2 flex flex-row justify-between items-center w-[100%]">
                 <div ref={addToRefs} className="hidden md:block">
                     <span>{time || "00:00:00"} IST</span>
+                </div>
+                <div ref={addToRefs} className="right">
+                    {/* Replace the switch with magical theme toggle */}
+                    <MagicalThemeToggle />
                 </div>
             </div>
         </div>

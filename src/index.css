@@ -9,65 +9,42 @@
   font-display: swap;
 }
 
-/* You can add additional weights/styles if available */
-/*
-@font-face {
-  font-family: 'Standerd';
-  src: url('./assets/Webfont/Standerd-Bold.woff') format('woff');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
+/* Transition animations */
+.transition-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
-*/
-
-/* Rest of your existing CSS follows... */
-.transition-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
-  }
   
-  .fadeIn {
-    animation: fadeIn 0.6s ease-in-out forwards;
-  }
+.fadeIn {
+  animation: fadeIn 0.6s ease-in-out forwards;
+}
   
-  /* Existing CSS content continues */
-
-.transition-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
-  }
+.fadeOut {
+  animation: fadeOut 0.6s ease-in-out forwards;
+}
   
-  .fadeIn {
-    animation: fadeIn 0.6s ease-in-out forwards;
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
   }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
   
-  .fadeOut {
-    animation: fadeOut 0.6s ease-in-out forwards;
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  @keyframes fadeIn {
-    0% {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  100% {
+    opacity: 0;
+    transform: translateY(-20px);
   }
-  
-  @keyframes fadeOut {
-    0% {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    100% {
-      opacity: 0;
-      transform: translateY(-20px);
-    }
-  }
+}
 
 /* Page transition styles */
 .page-transition {
@@ -77,34 +54,73 @@
   overflow: visible !important;
   isolation: isolate;
   transform-style: flat;
-}
-
-/* Add this to your CSS file */
-.page-transition {
   opacity: 0;
   transform: translateY(20px);
   animation: fadeIn 0.8s forwards;
 }
-  
-@keyframes fadeIn {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 
-/* Theme styles */
+/* Theme variables */
 :root {
   --text-color: #000;
   --bg-color: #fff;
   --transition-duration: 0.3s;
+  --text-color-rgb: 0, 0, 0;
+  --bg-color-rgb: 255, 255, 255;
+  --modal-z-index: 99999;
 }
 
 .dark-theme {
   --text-color: #fff;
   --bg-color: #000;
+  --text-color-rgb: 255, 255, 255;
+  --bg-color-rgb: 0, 0, 0;
 }
 
+/* Theme color pairs */
+.theme-classic {
+  --text-color: #000000;
+  --bg-color: #ffffff;
+  --text-color-rgb: 0, 0, 0;
+  --bg-color-rgb: 255, 255, 255;
+}
+
+.theme-midnight {
+  --text-color: #fffffe;
+  --bg-color: #0f0e17;
+  --text-color-rgb: 255, 255, 254;
+  --bg-color-rgb: 15, 14, 23;
+}
+
+.theme-mocha {
+  --text-color: #562c2c;
+  --bg-color: #f5f5f5;
+  --text-color-rgb: 86, 44, 44;
+  --bg-color-rgb: 245, 245, 245;
+}
+
+.theme-celestial {
+  --text-color: #f8cb65;
+  --bg-color: #2d334a;
+  --text-color-rgb: 248, 203, 101;
+  --bg-color-rgb: 45, 51, 74;
+}
+
+.theme-ocean {
+  --text-color: #1e3a5f;
+  --bg-color: #fffbf5;
+  --text-color-rgb: 30, 58, 95;
+  --bg-color-rgb: 255, 251, 245;
+}
+
+.theme-magic {
+  /* These will be overridden by the MagicalThemeToggle component */
+  --text-color: #3C3C3C;
+  --bg-color: #FEF5EF;
+  --text-color-rgb: 60, 60, 60;
+  --bg-color-rgb: 254, 245, 239;
+}
+
+/* Apply theme colors */
 body {
   color: var(--text-color);
   background-color: var(--bg-color);
@@ -124,22 +140,7 @@ a {
   color: var(--text-color);
 }
 
-/* Add these styles to your index.css file */
-
-/* Ensure modal sits above everything */
-:root {
-    --modal-z-index: 99999;
-  }
-  
-/* Fix page transition styles to not clip modal */
-.page-transition {
-  position: relative;
-  will-change: transform, opacity;
-  transform-origin: center top;
-  overflow: visible !important; /* Override hidden overflow */
-}
-
-/* When modal is open, ensure proper body styling */
+/* Modal styles */
 body.modal-open {
   overflow: hidden !important;
   position: fixed !important;
@@ -148,145 +149,47 @@ body.modal-open {
   touch-action: none !important;
 }
 
-/* Style for modal navigation buttons to ensure they're clickable */
-.modal-nav-button {
-  position: absolute;
-  z-index: calc(var(--modal-z-index) + 10);
-  background-color: rgba(200, 200, 200, 0.8);
-  border-radius: 50%;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  pointer-events: auto !important;
-  transition: all 0.3s ease;
+body.modal-open .page-transition {
+  transform: none !important;
+  transition: none !important;
 }
 
-.modal-nav-button:hover {
-  background-color: rgba(180, 180, 180, 0.9);
-}
-
-.modal-nav-button.prev {
-  left: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.modal-nav-button.next {
-  right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-/* Fix for Safari specific issues */
-@supports (-webkit-touch-callout: none) {
-  .modal-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: var(--modal-z-index);
-    transform: translateZ(0) !important;
-  }
-}
-
-/* Ensure thumbnails are visible and clickable */
-.modal-thumbnails {
-  z-index: calc(var(--modal-z-index) + 5);
-  pointer-events: auto !important;
-}
-
-/* Fix for Firefox */
-@-moz-document url-prefix() {
-  .modal-container {
-    transform-style: flat !important;
-    will-change: opacity !important;
-    transform: none !important;
-  }
-}
-
-/* Add these styles to your index.css file to ensure modal navigation works properly */
-
-/* Helper class to fix z-index issues and ensure proper stacking context */
-.modal-open {
-  overflow: hidden !important;
-}
-
-/* Ensure buttons are always clickable with ultra-high z-index */
-.modal-nav-button,
-button[aria-label="Previous image"],
-button[aria-label="Next image"] {
-  z-index: 999999 !important;
-  position: absolute !important;
-  pointer-events: auto !important;
-}
-
-/* Ensure the modal container appears above all page elements */
 .modal-container {
   position: fixed !important;
-  z-index: 99999 !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  width: 100% !important;
-  height: 90% !important;
-  max-width: 100vw !important;
-  max-height: 98vh !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  margin: 0 !important;
-  padding: 0 !important;
+  z-index: var(--modal-z-index) !important;
+  top: 0 ;
+  left: 0 ;
+  right: 0 ;
+  bottom: 0 ;
+  width: 100%;
+  height: 80% ;
+  max-width: 100vw ;
+  max-height: 90vh ;
+  display: flex ;
+  align-items: center ;
+  justify-content: center ;
+  margin: 0 ;
+  padding: 0;
   overflow: hidden !important;
   transform: none !important;
   will-change: opacity !important;
 }
 
-/* Fix specifically for thumbnails to ensure they're clickable */
-.thumbnail-strip {
-  z-index: 100000 !important;
-  pointer-events: auto !important;
-}
-
-/* Fix for Safari */
-@supports (-webkit-touch-callout: none) {
-  .modal-container button {
-    transform: translateZ(0);
-  }
-}
-
-/* Fix for Firefox */
-@-moz-document url-prefix() {
-  .modal-container button {
-    will-change: transform;
-  }
-}
-
-/* Critical fix to ensure buttons don't get hidden by other elements */
+ /*Ensure buttons and images are properly styled */
 .modal-container button {
   isolation: isolate;
+  z-index: calc(var(--modal-z-index) + 10) !important;
 }
 
-/* Reset any transforms from page transitions that might affect the modal */
-body.modal-open .page-transition {
-  transform: none !important;
+.modal-container img {
+  height: auto !important;
+  margin: auto !important;
+  object-fit: contain !important;
+  display: block !important;
+  max-height: 70vh !important;
 }
 
-/* Ensure the thumbnails are visible and clickable */
-.thumbnail-item {
-  position: relative;
-  z-index: 100000;
-}
-
-/* Add these styles to your index.css file for smooth image transitions */
-
-/* Image container style to handle positioning of images during transition */
+/* Image transition styles - important for preventing flicker */
 .image-transition-container {
   position: relative;
   width: 100%;
@@ -294,47 +197,6 @@ body.modal-open .page-transition {
   overflow: hidden;
 }
 
-/* Base styles for transitioning images */
-.modal-image {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  margin: auto;
-  max-height: 100%;
-  max-width: 100%;
-  object-fit: contain;
-  transition: transform 0.3s ease, opacity 0.3s ease;
-}
-
-/* Prevent image dragging which can interfere with transitions */
-.modal-image {
-  user-drag: none;
-  -webkit-user-drag: none;
-  user-select: none;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-}
-
-/* Fix for Safari's handling of absolute positioned elements */
-@supports (-webkit-touch-callout: none) {
-  .modal-image {
-    transform: translateZ(0);
-    will-change: transform, opacity;
-  }
-}
-
-/* Disable navigation buttons during transition */
-.is-transitioning button[aria-label="Previous image"],
-.is-transitioning button[aria-label="Next image"],
-.is-transitioning .thumbnail-item {
-  pointer-events: none !important;
-  opacity: 0.7 !important;
-}
-
-/* Ensure the image container properly centers content */
 .modal-image-container {
   display: flex;
   align-items: center;
@@ -345,20 +207,12 @@ body.modal-open .page-transition {
   overflow: hidden;
 }
 
-/* Make sure thumbnails remain visible during transitions */
-.thumbnail-strip {
-  isolation: isolate;
-  position: fixed !important;
-}
-
-/* Add these styles to your index.css file */
-
-/* Image slider base styles */
+/* Image slider animation styles */
 .image-slider {
   position: relative;
   overflow: hidden;
   width: 100%;
-  height: 60vh;
+  height: 100%; /* Fill available height */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -369,16 +223,22 @@ body.modal-open .page-transition {
   max-width: 100%;
   object-fit: contain;
   padding: 1rem;
-  transition: transform 0.5s ease, opacity 0.5s ease;
+  transition: transform 0.1s ease, opacity 0.1s ease;
+  user-drag: none;
+  -webkit-user-drag: none;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
 }
 
-/* Slide animations */
+/* Slide animations - critical for smooth transitions */
 .image-slider.slide-next .slider-image {
-  animation: slideNext 0.5s ease forwards;
+  animation: slideNext 0.1s ease forwards;
 }
 
 .image-slider.slide-prev .slider-image {
-  animation: slidePrev 0.5s ease forwards;
+  animation: slidePrev 0.1s ease forwards;
 }
 
 @keyframes slideNext {
@@ -417,106 +277,23 @@ body.modal-open .page-transition {
   }
 }
 
-/* Disable controls during transition */
+/* Preventing interaction during transitions */
 .is-transitioning button[aria-label="Previous image"],
-.is-transitioning button[aria-label="Next image"],
-.is-transitioning .thumbnail-item {
-  opacity: 0.5 !important;
+.is-transitioning button[aria-label="Next image"] {
+  pointer-events: none !important;
+  opacity: 0.7 !important;
   cursor: not-allowed !important;
 }
 
-/* Ensure thumbnails remain visible and clickable */
-.thumbnail-strip {
-  z-index: 100000 !important;
-  pointer-events: auto !important;
-}
-
-/* Ensure the image doesn't get dragged */
-.slider-image {
-  user-drag: none;
-  -webkit-user-drag: none;
-  user-select: none;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-}
-
-/* Fix for Safari */
-@supports (-webkit-touch-callout: none) {
-  .image-slider .slider-image {
-    transform: translateZ(0);
-    will-change: transform, opacity;
-  }
-}
-
-/* Fix for parent container when modal is open */
-.modal-parent-open .page-transition {
-  transform: none !important;
-  transition: none !important;
-}
-
-/* Make modal fully independent from page transitions */
-.modal-container,
-.modal-container * {
-  transform-style: flat !important;
-  transform: none !important;
-}
-
-/* Fix specificity for modal nav buttons */
-.modal-container .modal-nav-buttons button {
-  z-index: 999999 !important;
-  position: absolute !important;
-  pointer-events: auto !important;
-}
-
-/* Better image positioning in modal */
-.modal-container img {
-  height: auto !important;
-  margin: auto !important;
-  object-fit: contain !important;
-  display: block !important;
-}
-
-/* Adjust modal content vertical centering */
-.modal-container .flex.flex-col.items-center.justify-center {
-  justify-content: flex-start !important;
-}
-
-/* Ensure mobile image counter is visible */
-.modal-container .md\:hidden.absolute.bottom-28 {
-  bottom: 16vh !important;
-}
-
-/* Improve vertical spacing for thumbnails on mobile */
-@media (max-width: 768px) {
-  .modal-container .w-full.md\:w-20 {
-    position: fixed !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    background: rgba(245, 245, 245, 0.95) !important;
-    padding: 10px !important;
-    height: auto !important;
-  }
-  
-  .modal-container img {
-    max-height: 60vh !important;
-  }
-}
-
-/* ============ CUSTOM CURSOR STYLES ============ */
-
-/* Hide cursor on specific elements */
+/* Custom cursor styles */
 a, button, .image-container, [data-cursor] {
   cursor: none !important;
 }
 
-/* Hide default cursor for the entire page */
 html, body {
   cursor: none !important;
 }
 
-/* Only show cursor on screens that support hover */
 @media (hover: none) {
   html, body {
     cursor: auto !important;
@@ -533,92 +310,84 @@ html, body {
   }
 }
 
-/* Cursor effects for different states */
-.cursor-dot {
-  will-change: transform;
-  background-color: #000 !important; /* Always black on white background */
-}
-
-.dark-theme .cursor-dot {
-  background-color: #fff !important; /* White on dark background */
-}
-
-.cursor-follower {
-  will-change: transform;
-  border-color: rgba(0, 0, 0, 0.6) !important; /* Darker border on white background */
-}
-
-.dark-theme .cursor-follower {
-  border-color: rgba(255, 255, 255, 0.6) !important; /* Light border on dark background */
-}
-
-.cursor-follower.hovered {
-  border-color: #000 !important; /* Solid black border on hover for white background */
-}
-
-.dark-theme .cursor-follower.hovered {
-  border-color: #fff !important; /* Solid white border on hover for dark background */
-}
-
-/* Add these CSS rules to fix cursor flickering */
-
-/* Enable hardware acceleration for cursor elements */
 .cursor-dot,
 .cursor-follower,
 .cursor-text,
 .cursor-trail {
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  -moz-backface-visibility: hidden;
-  perspective: 1000;
-  -webkit-perspective: 1000;
-  transform-style: preserve-3d;
-  -webkit-transform-style: preserve-3d;
   will-change: transform;
 }
 
-/* Prevent flickering with smoother transitions */
+.cursor-dot {
+  background-color: #000 !important;
+}
+
+.dark-theme .cursor-dot {
+  background-color: #fff !important;
+}
+
 .cursor-follower {
+  border-color: rgba(0, 0, 0, 0.6) !important;
   transition: background-color 0.2s linear, border-color 0.2s linear !important;
 }
 
-/* Disable transition during clicking to prevent flicker */
+.dark-theme .cursor-follower {
+  border-color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.cursor-follower.hovered {
+  border-color: #000 !important;
+}
+
+.dark-theme .cursor-follower.hovered {
+  border-color: #fff !important;
+}
+
 .cursor-follower.clicking {
   transition: none !important;
   border-width: 2px !important;
 }
 
-/* Safari-specific fixes */
-@supports (-webkit-touch-callout: none) {
-  .cursor-dot,
-  .cursor-follower,
-  .cursor-text,
-  .cursor-trail {
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
+.cursor-text {
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-weight: 500;
+  font-size: 12px;
+  white-space: nowrap;
+  text-align: center;
+  color: #000;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
-/* Magnetic effect CSS transitions */
+.dark-theme .cursor-text {
+  color: #fff;
+}
+
+[data-cursor-text] ~ .cursor-text {
+  opacity: 1;
+}
+
+.cursor-trail {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 999997;
+  opacity: 0.5;
+  background-color: #000;
+}
+
+.dark-theme .cursor-trail {
+  background-color: #fff;
+}
+
+/* Magnetic effects */
 .magnetic-button,
 .magnetic-link {
   transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-/* Specific effects for different page elements */
-.link-magnetic:hover ~ .cursor-follower {
-  transform: scale(1.5) !important;
-  border-color: #000 !important;
-  background-color: rgba(0, 0, 0, 0.05) !important;
-}
-
-.button-magnetic:hover ~ .cursor-follower {
-  transform: scale(1.2) !important;
-  border-color: #000 !important;
-  background-color: rgba(0, 0, 0, 0.05) !important;
 }
 
 .image-container:hover ~ .cursor-follower {
@@ -628,54 +397,29 @@ html, body {
   backdrop-filter: blur(2px);
 }
 
-/* Dark theme versions */
-.dark-theme .link-magnetic:hover ~ .cursor-follower,
-.dark-theme .button-magnetic:hover ~ .cursor-follower,
 .dark-theme .image-container:hover ~ .cursor-follower {
   border-color: #fff !important;
   background-color: rgba(255, 255, 255, 0.1) !important;
 }
 
-/* Text styles for cursor text */
-.cursor-text {
-  opacity: 0;
-  transition: opacity 0.3s;
-  font-weight: 500;
-  font-size: 12px;
-  white-space: nowrap;
-  text-align: center;
-  color: #000; /* Black text on white background */
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+/* Mobile styles */
+@media (max-width: 768px) {
+  .modal-container img {
+    max-height: 50vh !important;
+  }
 }
 
-.dark-theme .cursor-text {
-  color: #fff; /* White text on dark background */
-}
-
-/* Customizable data attribute for cursor text */
-[data-cursor-text] ~ .cursor-text {
-  opacity: 1;
-}
-
-/* Add trail effect */
-.cursor-trail {
-  position: fixed;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 999997;
-  opacity: 0.5;
-  background-color: #000; /* Black on white background */
-}
-
-.dark-theme .cursor-trail {
-  background-color: #fff; /* White on dark background */
-}
-
-/* Safari fix */
+/* Browser fixes */
 @supports (-webkit-touch-callout: none) {
+  .modal-container {
+    transform: translateZ(0) !important;
+  }
+  
+  .image-slider .slider-image {
+    transform: translateZ(0);
+    will-change: transform, opacity;
+  }
+  
   .cursor-dot,
   .cursor-follower,
   .cursor-text {
@@ -683,60 +427,10 @@ html, body {
   }
 }
 
-/* Add these CSS variables to your index.css file for RGB color values */
-
-:root {
-    /* Our existing theme variables */
-    --text-color: #000;
-    --bg-color: #fff;
-    --transition-duration: 0.3s;
-    
-    /* RGB equivalents for creating rgba colors dynamically */
-    --text-color-rgb: 0, 0, 0;
-    --bg-color-rgb: 255, 255, 255;
+@-moz-document url-prefix() {
+  .modal-container {
+    transform-style: flat !important;
+    will-change: opacity !important;
+    transform: none !important;
   }
-  
-  /* Update RGB values when theme colors change */
-  .dark-theme {
-    --text-color: #fff;
-    --bg-color: #000;
-    --text-color-rgb: 255, 255, 255;
-    --bg-color-rgb: 0, 0, 0;
-  }
-  
-  /* Add these RGB values for each color pair in your MagicalThemeToggle component */
-  .theme-classic {
-    --text-color: #000000;
-    --bg-color: #ffffff;
-    --text-color-rgb: 0, 0, 0;
-    --bg-color-rgb: 255, 255, 255;
-  }
-  
-  .theme-midnight {
-    --text-color: #fffffe;
-    --bg-color: #0f0e17;
-    --text-color-rgb: 255, 255, 254;
-    --bg-color-rgb: 15, 14, 23;
-  }
-  
-  .theme-mocha {
-    --text-color: #562c2c;
-    --bg-color: #f5f5f5;
-    --text-color-rgb: 86, 44, 44;
-    --bg-color-rgb: 245, 245, 245;
-  }
-  
-  .theme-celestial {
-    --text-color: #f8cb65;
-    --bg-color: #2d334a;
-    --text-color-rgb: 248, 203, 101;
-    --bg-color-rgb: 45, 51, 74;
-  }
-  
-  .theme-ocean {
-    --text-color: #1e3a5f;
-    --bg-color: #fffbf5;
-    --text-color-rgb: 30, 58, 95;
-    --bg-color-rgb: 255, 251, 245;
-  }
-  
+}

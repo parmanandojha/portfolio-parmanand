@@ -1,24 +1,45 @@
-import { useEffect, useState, useRef } from 'react'
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom'
 import { gsap } from 'gsap'
-import Navbar from './components/navbar'
-import Info from './components/info'
-import Work from './components/work'
-import Footer from './components/footer'
-import PageTransition from './components/PageTransition'
-import Loader from './components/Loader'
-import Cursor from './components/Cursor'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import Navbar from './components/navbar.jsx'
+import Info from './components/info.jsx'
+import Work from './components/work.jsx'
+import PageTransition from './components/PageTransition.jsx'
+import Cursor from './components/Cursor.jsx'
+import Loader from './components/Loader.jsx'
 import './index.css'
+import { initMagneticEffect, initCursorTrail, enhanceNavigation } from './animations/magneticEffects.js'
+
+// Register ScrollTrigger plugin globally
+gsap.registerPlugin(ScrollTrigger);
 
 // AnimatedRoutes component to wrap each route with a transition
 const AnimatedRoutes = () => {
   const location = useLocation();
   
+  // Refresh ScrollTrigger when route changes
+  useEffect(() => {
+    // Kill existing ScrollTriggers first
+    ScrollTrigger.getAll().forEach(t => t.kill());
+    
+    // After route change and render, refresh ScrollTrigger
+    const timer = setTimeout(() => {
+      // Force a refresh
+      ScrollTrigger.refresh(true);
+      console.log("ScrollTrigger refreshed after route change");
+    }, 300);
+    
+    return () => clearTimeout(timer);
+  }, [location]);
+  
   return (
     <PageTransition>
       <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<Work />} />
+        <Route path="/" element={<Navigate to="/info" replace />} />
+        <Route path="/work" element={<Work />} />
         <Route path="/info" element={<Info />} />
+        {/* Redirect from root to info page */}
       </Routes>
     </PageTransition>
   );
@@ -36,6 +57,10 @@ function App() {
     document.fonts.ready.then(() => {
       console.log("Fonts are loaded and ready");
       setFontsLoaded(true);
+      
+      // Refresh ScrollTrigger after fonts are loaded
+      ScrollTrigger.refresh(true);
+      console.log("ScrollTrigger refreshed after fonts loaded");
     });
   }, []);
 
@@ -46,17 +71,18 @@ function App() {
       duration: 0.8
     });
     
-    // Prevent scrolling during loading
-    if (isLoading) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-
     // Add event listener for modal state
     const handleModalState = (e) => {
       if (e.detail?.isOpen !== undefined) {
         setIsModalOpen(e.detail.isOpen);
+        
+        // If modal is closed, refresh ScrollTrigger
+        if (!e.detail.isOpen) {
+          setTimeout(() => {
+            ScrollTrigger.refresh();
+            console.log("ScrollTrigger refreshed after modal close");
+          }, 400);
+        }
       }
     };
 
@@ -70,11 +96,11 @@ function App() {
     checkTouchDevice();
     window.addEventListener('resize', checkTouchDevice);
     
-    // Initialize magnetic effects and cursor trail after loading
+    // Initialize magnetic effects and cursor trail using our animation modules
     let cleanupMagnetic;
     let cleanupTrail;
     
-    if (!isLoading && !isTouchDevice) {
+    if (!isTouchDevice && !isLoading) {
       setTimeout(() => {
         cleanupMagnetic = initMagneticEffect();
         cleanupTrail = initCursorTrail();
@@ -82,252 +108,87 @@ function App() {
       }, 1000); // Delay to ensure DOM is fully loaded
     }
     
+    // Handle resize for ScrollTrigger - with debounce
+    const handleResize = () => {
+      if (window.scrollTriggerResizeTimer) {
+        clearTimeout(window.scrollTriggerResizeTimer);
+      }
+      
+      window.scrollTriggerResizeTimer = setTimeout(() => {
+        console.log("Refreshing ScrollTrigger after resize");
+        ScrollTrigger.refresh(true);
+      }, 250);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    
+    // Force a ScrollTrigger refresh after initial render
+    setTimeout(() => {
+      ScrollTrigger.refresh(true);
+      console.log("Initial ScrollTrigger refresh");
+    }, 1000);
+    
     return () => {
       window.removeEventListener('modal-state-change', handleModalState);
       window.removeEventListener('resize', checkTouchDevice);
+      window.removeEventListener('resize', handleResize);
+      
+      // Kill all ScrollTrigger instances to prevent memory leaks
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
       
       // Cleanup effects if initialized
       if (cleanupMagnetic) cleanupMagnetic();
       if (cleanupTrail) cleanupTrail();
+      
+      if (window.scrollTriggerResizeTimer) {
+        clearTimeout(window.scrollTriggerResizeTimer);
+      }
     };
-  }, [isLoading, isTouchDevice]);
+  }, [isTouchDevice, isLoading]);
 
-  // When loading completes, ensure all assets are processed
+  // Effect to refresh ScrollTrigger after loading completes
   useEffect(() => {
     if (!isLoading) {
-      // When loading completes, give the browser a moment to process loaded resources
-      const timeoutId = setTimeout(() => {
-        // Force a repaint to ensure everything is properly displayed
-        document.body.style.display = 'none';
-        document.body.offsetHeight; // Trigger reflow
-        document.body.style.display = '';
-        
-        // Initialize effects with a delay
-        if (!isTouchDevice) {
-          setTimeout(() => {
-            initMagneticEffect();
-            initCursorTrail();
-            enhanceNavigation();
-          }, 500);
-        }
-      }, 300);
-      
-      return () => clearTimeout(timeoutId);
+      // After loading is complete, refresh ScrollTrigger
+      setTimeout(() => {
+        ScrollTrigger.refresh(true);
+        console.log("ScrollTrigger refreshed after loading complete");
+      }, 500);
     }
-  }, [isLoading, isTouchDevice]);
-
-  // ============ INTEGRATED MAGNETIC EFFECT FUNCTIONS ============
-
-  // Utility function to add magnetic effect to elements
-  const initMagneticEffect = () => {
-    // Select all elements that should have magnetic effect
-    const magneticElements = document.querySelectorAll('[data-magnetic]');
-    
-    magneticElements.forEach(element => {
-      const strength = element.getAttribute('data-magnetic-strength') || 0.3;
-      const distance = element.getAttribute('data-magnetic-distance') || 40;
-      
-      // Initialize variables
-      let bound;
-      let elementCenterX;
-      let elementCenterY;
-      
-      // Update boundary values on resize
-      const calculateBounds = () => {
-        bound = element.getBoundingClientRect();
-        elementCenterX = bound.left + bound.width / 2;
-        elementCenterY = bound.top + bound.height / 2;
-      };
-      
-      // Calculate initial bounds
-      calculateBounds();
-      
-      // Recalculate on resize
-      window.addEventListener('resize', calculateBounds);
-      window.addEventListener('scroll', calculateBounds);
-      
-      // Mouse move handler
-      const handleMouseMove = (e) => {
-        // Check if mouse is close enough to activate effect
-        const distanceFromCenter = Math.sqrt(
-          Math.pow(e.clientX - elementCenterX, 2) + 
-          Math.pow(e.clientY - elementCenterY, 2)
-        );
-        
-        if (distanceFromCenter < parseInt(distance)) {
-          // Calculate movement based on distance from center
-          const x = (e.clientX - elementCenterX) * parseFloat(strength);
-          const y = (e.clientY - elementCenterY) * parseFloat(strength);
-          
-          // Apply transform
-          element.style.transform = `translate(${x}px, ${y}px)`;
-          element.classList.add('magnetic-active');
-        } else {
-          // Reset position when far away
-          resetPosition();
-        }
-      };
-      
-      // Reset position function
-      const resetPosition = () => {
-        element.style.transform = 'translate(0px, 0px)';
-        element.classList.remove('magnetic-active');
-      };
-      
-      // Add event listeners
-      document.addEventListener('mousemove', handleMouseMove);
-      element.addEventListener('mouseleave', resetPosition);
-      
-      // Cleanup function (call this when component unmounts)
-      element.cleanup = () => {
-        document.removeEventListener('mousemove', handleMouseMove);
-        element.removeEventListener('mouseleave', resetPosition);
-        window.removeEventListener('resize', calculateBounds);
-        window.removeEventListener('scroll', calculateBounds);
-      };
-    });
-    
-    // Return cleanup function
-    return () => {
-      magneticElements.forEach(element => {
-        if (element.cleanup) {
-          element.cleanup();
-        }
-      });
-    };
-  };
-
-  // Function to add cursor trails
-  const initCursorTrail = () => {
-    const trailCount = 8;
-    const trails = [];
-    
-    for (let i = 0; i < trailCount; i++) {
-      const trail = document.createElement('div');
-      trail.className = 'cursor-trail';
-      document.body.appendChild(trail);
-      trails.push({
-        element: trail,
-        x: 0,
-        y: 0
-      });
-    }
-    
-    let mouseX = 0;
-    let mouseY = 0;
-    
-    const handleMouseMove = (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-    };
-    
-    document.addEventListener('mousemove', handleMouseMove);
-    
-    const updateTrails = () => {
-      trails.forEach((trail, index) => {
-        // Add delay based on index
-        const delay = index * 0.08;
-        
-        // Calculate new position with easing
-        trail.x += (mouseX - trail.x) * (0.2 - delay * 0.05);
-        trail.y += (mouseY - trail.y) * (0.2 - delay * 0.05);
-        
-        // Update position
-        trail.element.style.transform = `translate3d(${trail.x}px, ${trail.y}px, 0)`;
-        
-        // Scale down as they follow
-        trail.element.style.width = `${6 - index * 0.5}px`;
-        trail.element.style.height = `${6 - index * 0.5}px`;
-      });
-      
-      requestAnimationFrame(updateTrails);
-    };
-    
-    updateTrails();
-    
-    // Return cleanup function
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      trails.forEach(trail => {
-        if (trail.element && trail.element.parentNode) {
-          document.body.removeChild(trail.element);
-        }
-      });
-    };
-  };
-
-  // Function to add magnetic effect to navigation items and buttons
-  const enhanceNavigation = () => {
-    // Find navigation items, footer links, and buttons
-    const navLinks = document.querySelectorAll('nav a, .footer a, button, .link-underline');
-    
-    navLinks.forEach(link => {
-      // Add data attributes for magnetic effect and cursor text
-      link.setAttribute('data-magnetic', '');
-      link.setAttribute('data-magnetic-strength', '0.2');
-      link.setAttribute('data-magnetic-distance', '30');
-      
-      // Add custom hover effect that interacts with cursor
-      link.addEventListener('mouseenter', () => {
-        document.dispatchEvent(new CustomEvent('cursor-update', { 
-          detail: { type: 'link', text: link.textContent.trim() || 'Click' }
-        }));
-      });
-      
-      link.addEventListener('mouseleave', () => {
-        document.dispatchEvent(new CustomEvent('cursor-reset'));
-      });
-    });
-    
-    // Find project image containers
-    const imageContainers = document.querySelectorAll('.image-container');
-    
-    imageContainers.forEach(container => {
-      // Add view text for image hover
-      container.setAttribute('data-cursor-text', 'View');
-      
-      // Add expand effect on hover
-      container.addEventListener('mouseenter', () => {
-        document.dispatchEvent(new CustomEvent('cursor-update', { 
-          detail: { type: 'image', text: 'View' }
-        }));
-      });
-      
-      container.addEventListener('mouseleave', () => {
-        document.dispatchEvent(new CustomEvent('cursor-reset'));
-      });
-    });
-  };
+  }, [isLoading]);
 
   return (
     <Router>
-      {/* Custom cursor - only show on non-touch devices */}
-      {!isTouchDevice && <Cursor />}
-      
-      {/* Show loader */}
+      {/* Loader - Show first */}
       <Loader isLoading={isLoading} setIsLoading={setIsLoading} />
       
-      {/* Main content with conditional opacity */}
-      <div 
-        className={` font-[Standerd] font-(family-name:--Standerd) font-medium relative min-h-screen transition-opacity duration-500 ${isModalOpen ? 'modal-parent-open' : ''}`}
-        style={{ 
-          opacity: isLoading ? 0 : 1,
-          transition: "opacity 0.6s ease-in-out" 
-        }}
-      >
-        <div className='fixed top-8 left-8 right-8 text-[1.55vh] z-[10]'>
-          <Navbar />
+      {/* Only render the rest of the app once loading is complete */}
+      {!isLoading && (
+        <div className="flex flex-col min-h-screen">
+          {/* Custom cursor - only show on non-touch devices */}
+          {!isTouchDevice && <Cursor />}
+          
+          {/* Navbar (fixed) */}
+          <div className='fixed top-8 left-8 right-8 text-[1.55vh] z-[2]' style={{
+            backgroundColor: "var(--bg-color)",
+          }}>
+            <Navbar />    
+          </div>
+          
+          {/* Main content - needs to be a flex-grow container */}
+          <div className={`flex-grow font-[Standerd] font-(family-name:--Standerd) font-medium relative transition-opacity duration-500 ${isModalOpen ? 'modal-parent-open' : ''}`}
+            style={{ 
+              opacity: 1,
+              transition: "opacity 0.6s ease-in-out",
+              paddingTop: "4rem" // Add padding to account for fixed navbar
+            }}
+          >
+            <div className='p-8 relative modal-content-parent'>
+              <AnimatedRoutes />
+            </div>
+          </div>
         </div>
-        
-        {/* Changed class to ensure modals work properly */}
-        <div className='p-8 relative pb-20 overflow-visible modal-content-parent'>
-          {!isLoading && <AnimatedRoutes />}
-        </div>
-        
-        <div className='fixed bottom-8 left-8 right-8 text-[1.55vh] z-10'>
-          <Footer />
-        </div>
-      </div>
+      )}
     </Router>
   )
 }

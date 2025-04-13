@@ -1,59 +1,23 @@
 import React, { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
+import { 
+  initLoaderAnimations,
+  cleanupAnimation 
+} from "../animations/index";
+import projectData from "./projectData"; // Import project data to get all images
 
-// Define all project images to preload
-const PROJECT_IMAGES = [
-  // Exponify
-  "project images/Exponify1.webp", 
-  "project images/Exponify2.webp", 
-  "project images/Exponify3.webp", 
-  "project images/Exponify4.webp", 
-  "project images/Exponify5.webp", 
-  "project images/Exponify6.webp", 
-  "project images/Exponify7.webp", 
-  "project images/Exponify8.webp", 
-  "project images/Exponify9.webp", 
-  "project images/Exponify10.webp",
-  // Ila
-  "project images/ila1.webp", 
-  "project images/ila2.webp", 
-  "project images/ila3.webp", 
-  "project images/ila4.webp", 
-  "project images/ila5.webp", 
-  "project images/ila6.webp", 
-  "project images/ila7.webp", 
-  "project images/ila8.webp", 
-  "project images/ila9.webp", 
-  "project images/ila10.webp",
-  // SmartTek
-  "project images/smarttek1.webp", 
-  "project images/smarttek2.webp",
-  "project images/smarttek3.webp",
-  "project images/smarttek4.webp",
-  "project images/smarttek5.webp",
-  "project images/smarttek6.webp", 
-  "project images/smarttek7.webp",
-  "project images/smarttek8.webp", 
-  "project images/smarttek9.webp",
-  // Haven
-  "project images/Haven1.webp", 
-  "project images/Haven2.webp",
-  "project images/Haven4.webp",
-  "project images/Haven7.webp",
-  "project images/Haven8.webp",
-  "project images/Haven9.webp",
-  // Maven
-  "project images/maven1.webp", 
-  "project images/maven2.webp",
-  "project images/maven3.webp",
-  "project images/maven4.webp",
-  "project images/maven5.webp",
-  "project images/maven6.webp",
-  "project images/maven7.webp", 
-  "project images/maven8.webp",
-  "project images/maven9.webp",
-  "project images/maven10.webp",
-];
+// Flatten all project images into a single array for loading
+const getAllProjectImages = () => {
+  let allImages = [];
+  projectData.forEach(project => {
+    if (project.images && Array.isArray(project.images)) {
+      allImages = [...allImages, ...project.images];
+    }
+  });
+  return allImages;
+};
+
+const PROJECT_IMAGES = getAllProjectImages();
 
 const Loader = ({ isLoading, setIsLoading }) => {
   const loaderRef = useRef(null);
@@ -62,6 +26,18 @@ const Loader = ({ isLoading, setIsLoading }) => {
   const progressBarRef = useRef(null);
   const [progress, setProgress] = useState(0);
   const [animationComplete, setAnimationComplete] = useState(false);
+  
+  // Hard-coded specific colors as requested
+  const backgroundColor = "#FEF5EF";
+  const textColor = "#3C3C3C";
+  
+  // Apply theme colors to root to match loader
+  useEffect(() => {
+    if (isLoading) {
+      document.documentElement.style.setProperty('--bg-color', backgroundColor);
+      document.documentElement.style.setProperty('--text-color', textColor);
+    }
+  }, [isLoading]);
   
   // Create hidden preload container for images to force browser to load them
   useEffect(() => {
@@ -81,17 +57,21 @@ const Loader = ({ isLoading, setIsLoading }) => {
     const totalImages = PROJECT_IMAGES.length;
     let loadedImages = 0;
     
+    console.log(`Starting to load ${totalImages} project images...`);
+    
     // Create image elements to force browser to load them
-    PROJECT_IMAGES.forEach(imageSrc => {
+    PROJECT_IMAGES.forEach((imageSrc, index) => {
       const img = new Image();
       
       img.onload = () => {
         loadedImages++;
         const newProgress = Math.round((loadedImages / totalImages) * 100);
+        console.log(`Loaded image ${loadedImages}/${totalImages} (${newProgress}%): ${imageSrc}`);
         setProgress(newProgress);
         
         if (loadedImages === totalImages) {
           // All images loaded - show 100% for a moment then complete
+          console.log("All images loaded successfully!");
           setTimeout(() => {
             setAnimationComplete(true);
           }, 500); // Allow 100% to show briefly
@@ -102,9 +82,11 @@ const Loader = ({ isLoading, setIsLoading }) => {
         // Count errors as loaded to prevent hanging
         loadedImages++;
         const newProgress = Math.round((loadedImages / totalImages) * 100);
+        console.log(`Error loading image ${loadedImages}/${totalImages} (${newProgress}%): ${imageSrc}`);
         setProgress(newProgress);
         
         if (loadedImages === totalImages) {
+          console.log("All images processed (some with errors)");
           setTimeout(() => {
             setAnimationComplete(true);
           }, 500);
@@ -124,12 +106,20 @@ const Loader = ({ isLoading, setIsLoading }) => {
     };
   }, [isLoading]);
   
-  // Update progress bar based on image loading progress
+  // Initialize loader animations
   useEffect(() => {
-    if (counterRef.current) {
-      counterRef.current.textContent = `${progress}%`;
-    }
+    if (!isLoading) return;
     
+    const ctx = gsap.context(() => {
+      // Initialize loader animations
+      initLoaderAnimations(loaderContentRef, progressBarRef);
+    });
+    
+    return () => cleanupAnimation(ctx);
+  }, [isLoading]);
+  
+  // Custom progress bar update
+  useEffect(() => {
     if (progressBarRef.current) {
       gsap.to(progressBarRef.current, {
         scaleX: progress / 100,
@@ -137,42 +127,25 @@ const Loader = ({ isLoading, setIsLoading }) => {
         ease: "power1.out"
       });
     }
+    
+    if (counterRef.current) {
+      counterRef.current.textContent = `${progress}%`;
+    }
   }, [progress]);
-  
-  // Handle loader animation
-  useEffect(() => {
-    if (!isLoading) return;
-    
-    const tl = gsap.timeline({
-      defaults: { ease: "power2.inOut" }
-    });
-    
-    // Set initial state
-    gsap.set(loaderContentRef.current, { opacity: 0, y: 20 });
-    gsap.set(progressBarRef.current, { scaleX: 0, transformOrigin: "left" });
-    
-    // Animate in
-    tl.to(loaderContentRef.current, { opacity: 1, y: 0, duration: 0.5 });
-  }, [isLoading]);
   
   // Handle hiding the loader when animation is complete and images are loaded
   useEffect(() => {
     if (animationComplete && loaderRef.current && progress >= 100) {
-      // Add a small delay to ensure everything is ready
-      setTimeout(() => {
-        // Hide loader
-        gsap.to(loaderRef.current, {
-          yPercent: -100,
-          duration: 0.8,
-          ease: "power3.inOut",
-          onComplete: () => {
-            // Wait a bit before fully removing loader
-            setTimeout(() => {
-              setIsLoading(false);
-            }, 200);
-          }
-        });
-      }, 400);
+      // Animate out the loader
+      gsap.to(loaderRef.current, {
+        opacity: 0,
+        duration: 0.5,
+        ease: "power2.inOut",
+        onComplete: () => {
+          // Set isLoading to false to unmount the loader completely
+          setIsLoading(false);
+        }
+      });
     }
   }, [animationComplete, progress, setIsLoading]);
   
@@ -182,18 +155,25 @@ const Loader = ({ isLoading, setIsLoading }) => {
   return (
     <div
       ref={loaderRef}
-      className="fixed inset-0 z-50 flex items-center justify-center font-(family-name:--Standerd) loader-container"
+      className="fixed inset-0 z-[9999] flex items-center justify-center font-(family-name:--Standerd) loader-container"
       style={{
-        backgroundColor: "var(--bg-color)",
-        color: "var(--text-color)"
+        backgroundColor: backgroundColor,
+        color: textColor,
+        transition: "opacity 0.5s ease-in-out"
       }}
     >
       <div ref={loaderContentRef} className="flex flex-col items-center">
         <div className="text-[6vh] md:text-[10vh] font-semibold mb-4 loader-text">LOADING</div>
-        <div className="relative w-60 h-[2px] bg-gray-300 dark:bg-gray-700 overflow-hidden loader-bar">
+        <div className="relative w-60 h-[2px] overflow-hidden loader-bar" 
+          style={{ backgroundColor: `${textColor}20` }}>
           <div 
             ref={progressBarRef} 
-            className="absolute top-0 left-0 h-full bg-current loader-progress"
+            className="absolute top-0 left-0 h-full loader-progress"
+            style={{
+              backgroundColor: textColor,
+              transform: "scaleX(0)",
+              transformOrigin: "left"
+            }}
           ></div>
         </div>
         <div 

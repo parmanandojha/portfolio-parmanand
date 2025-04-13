@@ -1,5 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
+import { 
+  initCursorAnimations, 
+  handleCursorHover, 
+  handleCursorClick, 
+  cleanupAnimation 
+} from "../animations/index";
 
 const Cursor = () => {
   const cursorRef = useRef(null);
@@ -16,94 +22,33 @@ const Cursor = () => {
     
     if (!cursor || !follower || !cursorText) return;
     
-    // Initial setup
-    gsap.set(cursor, { 
-      xPercent: -50, 
-      yPercent: -50,
-      force3D: true // Force 3D acceleration
-    });
-    gsap.set(follower, { 
-      xPercent: -50, 
-      yPercent: -50,
-      scale: 1,
-      force3D: true // Force 3D acceleration
-    });
-    gsap.set(cursorText, { 
-      xPercent: -50, 
-      yPercent: -50, 
-      autoAlpha: 0,
-      force3D: true // Force 3D acceleration
-    });
-    
-    // Variables for cursor movement
-    const pos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-    const mouse = { x: pos.x, y: pos.y };
-    const speed = 0.35;
-    
-    // Update mouse position
-    const xSet = gsap.quickSetter(cursor, "x", "px");
-    const ySet = gsap.quickSetter(cursor, "y", "px");
-    
-    // Update follower position with smoothing - using translate3d for better performance
-    const xFollow = gsap.quickSetter(follower, "x", "px");
-    const yFollow = gsap.quickSetter(follower, "y", "px");
-    
-    // Update text position (follows the follower)
-    const xText = gsap.quickSetter(cursorText, "x", "px");
-    const yText = gsap.quickSetter(cursorText, "y", "px");
-    
-    // Animation loop for smooth following
-    gsap.ticker.add(() => {
-      // Calculate new position with easing
-      const dt = 1.0 - Math.pow(1.0 - speed, gsap.ticker.deltaRatio());
-      
-      pos.x += (mouse.x - pos.x) * dt;
-      pos.y += (mouse.y - pos.y) * dt;
-      
-      // Update follower and text positions with translate3d for better performance
-      xFollow(pos.x);
-      yFollow(pos.y);
-      
-      // Cursor position is exact mouse position (no smoothing)
-      xSet(mouse.x);
-      ySet(mouse.y);
-      
-      // Text follows the follower exactly
-      xText(pos.x);
-      yText(pos.y);
+    // Initialize cursor animations using our animation module
+    const { updateMousePos, ticker } = initCursorAnimations({
+      cursor, 
+      follower, 
+      cursorText
     });
     
     // Mouse move event listener
     const handleMouseMove = (e) => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
+      updateMousePos(e.clientX, e.clientY);
     };
     
     // Mouse down/up event listeners
     const handleMouseDown = (e) => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
+      updateMousePos(e.clientX, e.clientY);
       setIsClicking(true);
       
-      // Scale the follower down on click using GSAP instead of CSS
-      gsap.to(follower, {
-        scale: 0.9,
-        duration: 0.2,
-        ease: "power2.out"
-      });
+      // Handle click animation
+      handleCursorClick(follower, true);
     };
     
     const handleMouseUp = (e) => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
+      updateMousePos(e.clientX, e.clientY);
       setIsClicking(false);
       
-      // Scale the follower back on release using GSAP instead of CSS
-      gsap.to(follower, {
-        scale: isHovering ? (follower._gsap ? follower._gsap.scale : 1) : 1,
-        duration: 0.2,
-        ease: "power2.out"
-      });
+      // Handle click release animation
+      handleCursorClick(follower, false);
     };
     
     // Set up hover detection for clickable elements
@@ -117,52 +62,30 @@ const Cursor = () => {
           
           // Get custom text if available
           const textAttr = target.getAttribute('data-cursor-text');
-          if (textAttr) {
-            setCursorText(textAttr);
-            gsap.to(cursorText, { autoAlpha: 1, duration: 0.3 });
+          const hoverText = textAttr || (target.classList.contains('image-container') ? "View" : "");
+          
+          setCursorText(hoverText);
+          
+          // Determine element type for styling
+          let type = 'default';
+          if (target.tagName.toLowerCase() === 'a') {
+            type = 'link';
+          } else if (target.tagName.toLowerCase() === 'button') {
+            type = 'button';
           } else if (target.classList.contains('image-container')) {
-            setCursorText("View");
-            gsap.to(cursorText, { autoAlpha: 1, duration: 0.3 });
+            type = 'image';
           }
           
-          // Special styles for different element types
-          if (target.tagName.toLowerCase() === 'a') {
-            // Link hover style
-            gsap.to(follower, { 
-              backgroundColor: "rgba(0, 0, 0, 0.05)",
-              borderColor: "#000",
-              scale: 1.5,
-              duration: 0.3 
-            });
-          } else if (target.tagName.toLowerCase() === 'button') {
-            // Button hover style
-            gsap.to(follower, { 
-              backgroundColor: "rgba(0, 0, 0, 0.05)",
-              borderColor: "#000",
-              scale: 1.2,
-              duration: 0.3 
-            });
-          } else if (target.classList.contains('image-container')) {
-            // Image hover style
-            gsap.to(follower, { 
-              backgroundColor: "rgba(0, 0, 0, 0.1)",
-              borderColor: "#000",
-              scale: 1.8,
-              duration: 0.3
-            });
-          }
+          // Handle hover animation
+          handleCursorHover(follower, cursorText, isClicking, hoverText, type);
         });
         
         target.addEventListener('mouseleave', () => {
           setIsHovering(false);
           setCursorText("");
-          gsap.to(cursorText, { autoAlpha: 0, duration: 0.3 });
-          gsap.to(follower, { 
-            backgroundColor: "rgba(0, 0, 0, 0.03)",
-            borderColor: "rgba(0, 0, 0, 0.6)",
-            scale: 1,
-            duration: 0.3 
-          });
+          
+          // Reset hover animation
+          handleCursorHover(follower, cursorText, isClicking, "", "default");
         });
       });
     };
@@ -171,47 +94,19 @@ const Cursor = () => {
     const handleCursorUpdate = (e) => {
       const { type, text } = e.detail;
       
-      if (text) {
-        setCursorText(text);
-        gsap.to(cursorText, { autoAlpha: 1, duration: 0.3 });
-      }
-      
-      if (type === 'link') {
-        gsap.to(follower, { 
-          backgroundColor: "rgba(255, 255, 255, 0)",
-          borderColor: "var(--text-color)",
-          scale: 1.5,
-          duration: 0.3 
-        });
-      } else if (type === 'button') {
-        gsap.to(follower, { 
-          backgroundColor: "rgba(255, 255, 255, 0)",
-          borderColor: "var(--text-color)",
-          scale: 1.2,
-          duration: 0.3 
-        });
-      } else if (type === 'image') {
-        gsap.to(follower, { 
-          backgroundColor: "rgba(255, 255, 255, 0.1)",
-          borderColor: "var(--text-color)",
-          scale: 1.8,
-          duration: 0.3
-        });
-      }
-      
+      setCursorText(text || "");
       setIsHovering(true);
+      
+      // Handle hover animation
+      handleCursorHover(follower, cursorText, isClicking, text, type);
     };
     
     const handleCursorReset = () => {
       setIsHovering(false);
       setCursorText("");
-      gsap.to(cursorText, { autoAlpha: 0, duration: 0.3 });
-      gsap.to(follower, { 
-        backgroundColor: "rgba(255, 255, 255, 0.03)",
-        borderColor: "rgba(255, 255, 255, 0.5)",
-        scale: 1,
-        duration: 0.3 
-      });
+      
+      // Reset hover animation
+      handleCursorHover(follower, cursorText, isClicking, "", "default");
     };
     
     // Initial setup
@@ -250,7 +145,11 @@ const Cursor = () => {
       window.removeEventListener('resize', setupHoverElements);
       observer.disconnect();
       document.body.style.cursor = 'auto';
-      gsap.ticker.remove();
+      
+      // Clean up ticker
+      if (ticker) {
+        gsap.ticker.remove(ticker);
+      }
     };
   }, []);
   
