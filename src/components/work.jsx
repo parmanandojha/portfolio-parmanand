@@ -4,7 +4,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import projectData from "./projectData"; // Import project data
 import FullscreenViewer from "./FullscreenViewer"; // Import the fullscreen viewer component
 import { initWorkAnimations, setupProjectHoverEffects, cleanupAnimation } from "../animations/index";
-import Footer from './Footer'
+import Footer from './Footer.jsx'
 
 // Register ScrollTrigger plugin to ensure it's available
 gsap.registerPlugin(ScrollTrigger);
