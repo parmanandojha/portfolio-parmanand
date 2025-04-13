@@ -4,7 +4,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import projectData from "./projectData"; // Import project data
 import FullscreenViewer from "./FullscreenViewer"; // Import the fullscreen viewer component
 import { initWorkAnimations, setupProjectHoverEffects, cleanupAnimation } from "../animations/index";
-import Footer from './Footer'
+import NewFooter from "./newFooter"; // Correct import with capitalized name
 
 // Register ScrollTrigger plugin to ensure it's available
 gsap.registerPlugin(ScrollTrigger);
@@ -240,9 +240,9 @@ function Work() {
                 setCurrentImage={setSelectedImage}
             />
              {/* Footer - at the bottom of the flex container */}
-          <footer className='w-full pt-24'>
-            <Footer />
-          </footer>
+          <div className='w-full pt-24'>
+            <NewFooter /> {/* Correct JSX for component with proper capitalization */}
+          </div>
         </div>
     );
 }

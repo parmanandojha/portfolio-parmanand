@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { initInfoAnimations, cleanupAnimation } from "../animations/index";
-import Footer from './Footer'
+import NewFooter from "./newFooter";  // Correct import with capitalized name
 
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
@@ -83,9 +83,9 @@ function Info() {
             </div>
             
             {/* Footer - at the bottom of the flex container */}
-            <footer ref={footerContainerRef} className='w-full pt-24 mt-auto opacity-100'>
-                <Footer />
-            </footer>
+            <div ref={footerContainerRef} className='w-full pt-24 mt-auto opacity-100'>
+                <NewFooter /> {/* Correct JSX for component with proper capitalization */}
+            </div>
         </div>
     )
 }
