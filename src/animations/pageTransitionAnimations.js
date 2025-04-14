@@ -3,11 +3,19 @@ import { setInitialState } from './utils';
 
 // Function to set initial state with no animation
 export const setInitialPageState = (pageRef) => {
-  setInitialState(pageRef, { opacity: 1, y: 0 });
+  if (!pageRef) return;
+  
+  setInitialState(pageRef, { 
+    opacity: 1, 
+    y: 0,
+    scale: 1
+  });
 };
 
 // Function to animate page transitions
 export const animatePageTransition = (pageRef, onComplete) => {
+  if (!pageRef) return null;
+  
   // Create timeline for the transition animation
   const tl = gsap.timeline({
     defaults: {
@@ -18,19 +26,24 @@ export const animatePageTransition = (pageRef, onComplete) => {
   // Exit animation
   tl.to(pageRef, {
     opacity: 0,
-    y: -20,
-    duration: 0.5,
+    y: -15,
+    scale: 0.98,
+    duration: 0.4,
   })
   // Update content and prepare for entrance animation
   .set(pageRef, {
-    y: 40,
+    y: 20,
+    scale: 0.98,
     onComplete: onComplete
   })
   // Entrance animation
   .to(pageRef, {
     opacity: 1,
     y: 0,
+    scale: 1,
     duration: 0.6,
+    ease: "power2.out",
+    clearProps: "all"
   });
   
   return tl;
