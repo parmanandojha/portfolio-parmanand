@@ -36,7 +36,7 @@ function NewFooter() {
           </span>
         </div>
         <div className="col-span-2">
-          <div className="text-[1.55vh] font-semibold mb-4 leading-[0.8]">
+          <div className="text-[1.55vh] font-semibold mb-4">
             <div className="flex flex-row justify-between">
               <span>
                 <a 
