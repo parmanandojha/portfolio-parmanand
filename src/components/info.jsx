@@ -173,7 +173,7 @@ function Info() {
             <div className="relative my-12 sm:my-16 md:my-24">
                 <div 
                     ref={nameBlurredTextRef}
-                    className="relative flex flex-col text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-semibold uppercase mb-4 leading-[1] blur-[2px] sm:blur-sm px-2 sm:px-4 opacity-32 sm:opacity-64"
+                    className="relative w-100% flex flex-col text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-semibold uppercase mb-4 leading-[1] blur-[3px] sm:blur-sm px-2 sm:px-4 opacity-32 sm:opacity-64"
                 >
                     <div>Graphics &</div>
                     <div>UI/UX Designer,</div>
