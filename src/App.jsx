@@ -169,7 +169,7 @@ function App() {
           {!isTouchDevice && <Cursor />}
           
           {/* Navbar (fixed) */}
-          <div className='fixed top-8 left-8 right-8 text-[1.55vh] z-[2]' style={{
+          <div className='fixed top-2 left-2 right-2 sm:top-8 sm:right-8 sm:left-8 text-[1.55vh] z-[2]' style={{
             backgroundColor: "var(--bg-color)",
           }}>
             <Navbar />    
@@ -183,7 +183,7 @@ function App() {
               paddingTop: "4rem" // Add padding to account for fixed navbar
             }}
           >
-            <div className='p-8 relative modal-content-parent'>
+            <div className='p-2 sm:p-8 relative modal-content-parent'>
               <AnimatedRoutes />
             </div>
           </div>

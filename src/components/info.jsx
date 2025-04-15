@@ -173,7 +173,7 @@ function Info() {
             <div className="relative my-12 sm:my-16 md:my-24">
                 <div 
                     ref={nameBlurredTextRef}
-                    className="relative flex flex-col text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-semibold uppercase mb-4 leading-[1] blur-[4px] sm:blur-sm px-4 opacity-32 sm:opacity-64"
+                    className="relative flex flex-col text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-semibold uppercase mb-4 leading-[1] blur-[4px] sm:blur-sm px-2 sm:px-4 opacity-32 sm:opacity-64"
                 >
                     <div>Graphics &</div>
                     <div>UI/UX Designer,</div>
@@ -189,11 +189,11 @@ function Info() {
             </div>
 
             {/* Main content section with multiple text elements */}
-            <div className="relative my-12 sm:my-16 md:my-24">
+            <div className="relative my-32 sm:my-24">
                 {/* Blurred background text */}
                 <div 
                     ref={backgroundTextRef}
-                    className="relative flex flex-col text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-semibold mb-4 leading-[1] blur-[4px] sm:blur-sm px-4 uppercase opacity-32 sm:opacity-64"
+                    className="relative flex flex-col text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-semibold mb-4 leading-[1] blur-[4px] sm:blur-sm px-2 sm:px-4 uppercase opacity-32 sm:opacity-64"
                 >
                     <div>A lot of amazing </div>
                     <div>products are being</div>
