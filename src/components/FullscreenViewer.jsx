@@ -340,7 +340,7 @@ function FullscreenViewer({
           {currentProject && (
             <>
               {/* Project Title */}
-              <h2 className="text-[4vh] md:text-[6vh] font-semibold mb-4">
+              <h2 className="text-[1.6vh] md:text-[6vh] font-semibold mb-4">
                 {currentProject.name}
               </h2>
               
