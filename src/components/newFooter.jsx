@@ -60,7 +60,7 @@ function NewFooter() {
               </span>
               <span>
                 <a 
-                  href="https://drive.google.com/file/d/1q9GRAeRT0gYaj8BKIfoYqiDwqY3OEJDJ/view?usp=sharing" 
+                  href="https://drive.google.com/file/d/1NMRz_xv-QCCv50Iw_-3dX3_N_KDoQ529/view?usp=sharing" 
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="hover:underline"
